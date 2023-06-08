@@ -1,0 +1,68 @@
+.menu-btn{
+  width: 65px;
+  background-color: var(--dark);
+}
+.css-18sg6k4-MuiPaper-root-MuiDrawer-paper{
+  background-color: var(--dark) !important;
+
+}
+.drawer{
+  color: #fff;
+  .menu-btn{
+    margin: 20px auto 10px;
+    color: #fff;
+    padding: 0;
+  }
+  .arrow-btn{
+    color: #fff;
+    margin-top: 20px ;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 0;
+    font-size: 1.5rem;
+  }
+  .listHeader{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    p{
+      color: #fff;
+      margin: 5px 0;
+      font-size: 12px;
+    }
+  }
+}
+.css-1elwnq4-MuiPaper-root-MuiAccordion-root{
+  background-color: unset !important;
+  box-shadow: none !important;
+}
+.css-sh22l5-MuiButtonBase-root-MuiAccordionSummary-root {
+  padding: 0 !important;
+}
+.css-1m5i5w0-MuiButtonBase-root-MuiListItemButton-root{
+  padding: 0 10px !important;
+}
+
+.css-1fqi8hc-MuiButtonBase-root-MuiListItemButton-root{
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.css-18sg6k4-MuiPaper-root-MuiDrawer-paper{
+  background-color: var(--dark) !important ;
+}
+.css-1ciwpa8 {
+  background-color: var(--dark) !important;
+}
+.css-67l5gl{
+  background-color: unset !important;
+  box-shadow: none !important;
+}
+@media print {
+  /* hide the button when printing */
+  #sidebar-print{
+      display: none;
+  }
+}
+.css-15v22id-MuiAccordionDetails-root{
+  padding-left: 0 !important;
+}

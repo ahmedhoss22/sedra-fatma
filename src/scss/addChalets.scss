@@ -1,0 +1,106 @@
+.cont{
+    width: 100%;
+    margin:10vh 0;
+    display: flex;
+    flex-direction: column;
+    h2{
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin-right: 20px;
+    }
+    .search-box{
+        margin: 0 0 30px;
+        display: flex;
+        .btn{
+            background-color: var(--primary);
+            font-size: 1rem;
+            border-radius: 10px;
+        }
+    }
+    .tablehead{
+        background-color: var(--primary);
+        .table-row{
+            color: #fff !important;
+            font-weight: 700;
+        }
+    }
+}
+.model{
+    border-radius: 20px;
+    border: 2px solid var(--primary);
+}
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked, .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate{
+    color: var(--primary) !important;
+}
+@media print {
+    /* hide the button when printing */
+    .sidebar-print{
+        display: none;
+    }
+    .cont{
+        h2{
+         display: none;
+        }
+        .search-box{
+            display: none;
+
+            .btn{
+                display: none;
+            }
+        }
+    }
+    button{
+        display: none;
+    }
+    .table-print{
+        position: absolute;
+        z-index: 1;
+        width: 100% !important; 
+        // height: 100% !important;
+        top: 20px;
+        left: 0 !important;
+        button{
+            display: none;
+        }
+        .row-hidden-print{
+            display: none;
+        }
+    }
+  }
+  .btns-box{
+    display: flex;
+    justify-content: center;
+    flex-direction: row-reverse;
+    .btns{
+        color:#000000;
+        border: 1px solid #BFBFBF;
+        font-size: 1.1rem;
+        padding: 10px 20px;
+        border-radius: 10px;
+    }
+    .active{
+        background-color: var(--primary);
+        color: #ffff;
+    }
+}
+.bills-btn{
+    background-color:#B38D46 !important;
+    height:50px;
+    font-size:1rem;
+    margin: auto;
+    border-radius: 20px !important;
+}
+.css-mhc70k-MuiGrid-root{
+    justify-content: center !important;
+}
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root:hover{
+    background-color: unset !important;
+    opacity: .8;
+}
+.btns-box .active:hover{
+    opacity: .8;
+    background-color: var(--primary) !important;
+}
+.css-12nfj3d-MuiFormControl-root-MuiTextField-root{
+    margin: 0 20px !important;
+}

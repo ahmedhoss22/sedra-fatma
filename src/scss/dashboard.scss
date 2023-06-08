@@ -1,0 +1,90 @@
+body{
+    margin: 20px 80px;
+}
+.container{
+    margin: 10vh 0;
+    .box{
+        border-radius: 30px;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        font-size: 1.5rem;
+        box-sizing: border-box !important;
+        font-weight: 700;
+        cursor: pointer;
+    user-select: none;
+    &:hover{
+        opacity: .8;
+    }
+}
+.calender-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin:  20px 0 0;
+    .group{
+        span{
+            font-size: 1rem;
+        }
+        input{
+            border-radius: 5px;
+            border: 1px solid gray;
+            text-align: center;
+            height: 20px;
+            &:focus{
+                border: 1px solid gray;
+            }
+        }
+    } 
+    
+}
+}
+.fc .fc-button-primary:disabled ,.fc-direction-ltr .fc-button-group>.fc-button:not(:first-child) ,.fc .fc-button .fc-icon ,.fc-direction-ltr .fc-button-group>.fc-button:not(:last-child){
+    // display: none;
+}
+.fc .fc-button .fc-icon{
+    font-size: 1rem;
+}
+.fc .fc-button-primary{
+    background-color: #5CB854;
+    height: 30px;
+    // border-color: unset;
+    &:hover{
+        background-color: #5CB854 !important;
+        opacity: .7;
+    }
+}
+.fc .fc-toolbar.fc-header-toolbar{
+    display: block;
+    text-align: center;
+}
+@media screen and (max-width:450px) {
+    body{
+        margin: 0 !important;
+    }
+    .box{
+        font-size: 1rem;
+    }
+}
+.fc-toolbar-chunk{
+    margin: 10px 0 0;
+}
+
+.css-1ps4owl-MuiTypography-root-MuiLink-root{
+    text-decoration: none !important;
+}
+.fc .fc-button-primary{
+    line-height: 20px;
+}
+.fc .fc-button-group>.fc-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fc-daygrid-event{
+    background-color:#5CB854;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    word-break: break-all;
+}
