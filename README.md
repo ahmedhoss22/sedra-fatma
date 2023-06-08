@@ -1,46 +1,37 @@
-# Getting Started with Create React App and Redux
+# Admin App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app), using the [Redux](https://redux.js.org/) and [Redux Toolkit](https://redux-toolkit.js.org/) template.
+This is the README file for the Admin App, which allows administrators to manage entities like chalets, resorts, and halls. The Admin App also provides functionality to accept and reject reservations and includes pages for finance and reporting.
 
-## Available Scripts
+## Technologies Used
 
-In the project directory, you can run:
+The Admin App is developed using the following technologies and libraries:
 
-### `npm start`
+- React: A JavaScript library for building user interfaces.
+- Axios: A popular library for making HTTP requests to the server.
+- Material-UI (Mui): A UI component library that provides pre-built React components following the Material Design principles.
+- Bootstrap: A CSS framework that helps with responsive web design and provides ready-to-use components.
+- Redux Toolkit: A library that simplifies the management of state in React applications by providing a predictable state container.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The Admin App includes the following features:
 
-### `npm test`
+1. Entity Management: Administrators can add and manage entities like chalets, resorts, and halls.
+2. Reservation Management: Administrators can accept and reject reservations made by users.
+3. Finance Page: Administrators can access a dedicated page for financial information and management.
+4. Reporting Page: Administrators can generate reports and access data analysis tools.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## App Pages
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The User App consists of the following pages:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Dashboard Page:
+   - ![Home Page](page_img/dashboard.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Report Page:
+   - ![Reservation Page](page_img/report.png)
 
-### `npm run eject`
+3. Reservations Page:
+   - ![Login/Register Page](page_img/reservation.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
