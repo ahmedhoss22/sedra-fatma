@@ -6,26 +6,30 @@ const Hall =require("../model/hall")
 const Resort =require("../model/resort")
 const Chalet =require("../model/chalet")
 const Rating=require('../model/rating')
-
+const Notification=require("../model/notification")
 const reservation={
-    postUserUnconfirmedReservation:async (req,res)=>{
+    postUserUnconfirmedReservation:async (req,res,nxt)=>{
         try {
-            let {image,clientId,clientName,startDate,endDate,periodType,dayPeriod,cost,entityId,entityName}=req.body
+            let {image,type,clientId,clientName,startDate,endDate,periodType,dayPeriod,cost,entityId,entityName,phone}=req.body
             let check=await Reservation.find({ "client.id": clientId,"client.name":clientName, status: 'unConfirmed' ,'entity.id':entityId})
             if(check.length!=0) return res.status(403).send("You have reserved this entity")
             if(startDate) startDate= format(parseISO(startDate) ,'yyyy-MM-dd')
             if(endDate) endDate= format(parseISO(endDate),'yyyy-MM-dd')
             const reserve=new Reservation({
-                client:{name:clientName,id:clientId},
+                client:{name:clientName,id:clientId,phone},
                 entity:{name:entityName,id:entityId},
-                finance:{cost},
+                cost,
+                type,
                 period:{type:periodType,startDate,endDate,dayPeriod},
                 status:'unConfirmed',
                 date:dateToday(),
                 image
             })
              await reserve.save()
-            .then(()=>res.send('Done'))
+            .then(()=>{
+                req.type="unconfirmed"
+                nxt()
+            })
             .catch((e)=>{
                 console.log(e.message);
                 res.status(400).send({error:e.message})
@@ -62,7 +66,7 @@ const reservation={
                     "client.name":clientName,
                     "entity.name":entityName,
                     "entity.id":entityId,
-                    "finance.cost":cost,
+                    "cost":cost,
                     "period.startDate":startDate,
                     "period.endDate":endDate,
                     "period.dayPeriod":dayPeriod,
@@ -91,11 +95,14 @@ const reservation={
             res.status(500).send({error:error.message})
         }
     },
-    confirmOrder:async(req,res)=>{
+    confirmOrder:async(req,res,nxt)=>{
         try {
             let {_id}=req.body
             await Reservation.findByIdAndUpdate(_id,{status:"confirmed"})
-            .then(()=>res.send())
+            .then(()=>{
+                req.type="confirmed"
+                nxt()
+            })
             .catch((error)=>{
                 console.log(error.message);
                 res.status(500).send({error:error.message})
@@ -105,14 +112,13 @@ const reservation={
             res.status(500).send(error.message)
         }
     },
-    postConfirmedReservations:async(req,res)=>{
+    postConfirmedReservations:async(req,res,nxt)=>{
         try {
-            let {clientName,entityId,entityName,startDate,endDate,cost,dayPeriod,tax,paid,insurance,contractNumber}=req.body
-           console.log(req.body);
+            let {clientName,phone,entityId,entityName,startDate,endDate,cost,dayPeriod,tax,paid,contractNumber}=req.body
             let newOne= new Reservation({
-                client:{name:clientName},
+                client:{name:clientName,phone},
                 entity:{name:entityName,id:entityId},
-                finance:{cost,paid,tax,remain:paid-tax ,insurance:{amount:insurance.amount}},
+                finance:{cost,paid,tax,remain:paid-tax },
                 period:{startDate,endDate,dayPeriod},
                 status:"confirmed",
                 contractNumber,
@@ -120,7 +126,10 @@ const reservation={
                 employee:req.user.name
             })
             await newOne.save()
-            .then(()=>res.send())
+            .then(()=>{
+                req.type="confirmed"
+                nxt()
+            })
             .catch((err)=>{throw new Error(err.message)})
         } catch (error) {
             console.log(error.message);
@@ -138,11 +147,12 @@ const reservation={
     },
     updateConfirmedReservation:async(req,res)=>{
         try {
-            let {clientName,entityId,entityName,cost,tax,paid,insurance,contractNumber}=req.body
+            let {clientName,cost,tax,contractNumber,clientPhone}=req.body
+            console.log(req.body);
            await Reservation.findByIdAndUpdate(req.body._id,{
-                client:{name:clientName},
-                entity:{name:entityName,id:entityId},
-                finance:{cost,paid,tax,remain:paid-tax ,insurance:{amount:insurance.amount}},
+                client:{name:clientName,phone:clientPhone},
+                cost,
+                tax,
                 contractNumber,
                 employee:req.user.name
             }).then(()=>res.send())
@@ -165,7 +175,7 @@ const reservation={
     retriveInsurance:async(req,res)=>{
         try {
             let {id}=req.body
-            await Reservation.findByIdAndUpdate(id,{"finance.insurance.restored":true})
+            await Reservation.findByIdAndUpdate(id,{restored:true})
             .then(()=>res.send())
             .catch(()=>{
                 console.log(error);
@@ -277,6 +287,34 @@ const reservation={
         } catch (error) {
             console.log(error.message);
             res.status(500).send({error:error.message})
+        }
+    },
+    postNotification:async(req,res)=>{
+        try {
+            let data=new Notification({type:req.type})
+            await data.save()
+            .then(()=>res.send())
+        } catch (error) {
+            console.log(error);
+            res.status(400).send({error:error.message})
+        }
+    },
+    getNotification:async(req,res)=>{
+        try {
+            let data = await Notification.find({})
+            res.send(data)
+        } catch (error) {
+            console.log(error);
+            res.status(400).send({error:error.message})
+        }
+    },
+    deleteNotifiaction:async(req,res)=>{
+        try {
+            await Notification.findOneAndDelete({type:req.body.type})
+            .then(()=>res.send())
+        } catch (error) {
+            console.log(error);
+            res.status(400).send({error:error.message})
         }
     }
       

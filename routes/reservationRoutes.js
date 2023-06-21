@@ -5,16 +5,16 @@ const validReservation=require("../middlewares/validReservation");
 const middlware = require('../middlewares/middleware');
 
 router.route('/user/reservation')
-.post(reservation.postUserUnconfirmedReservation)
+.post(reservation.postUserUnconfirmedReservation,reservation.postNotification)
 router.get('/user/reservations/:id',reservation.getUserReservations)
 router.get('/admin/reservations/all',reservation.getAllReservations)
 
 router.route("/admin/reservation")
-.post(reservation.postUserUnconfirmedReservation)
-.patch(validReservation.checkPeriod,reservation.confirmOrder)
+.post(reservation.postUserUnconfirmedReservation,reservation.postNotification)
+.patch(validReservation.checkPeriod,reservation.confirmOrder,reservation.postNotification)
 
 router.route("/admin/reservation/confirmed")
-.post(validReservation.confirmedCheckPeriod,middlware.authorization,reservation.postConfirmedReservations)
+.post(validReservation.confirmedCheckPeriod,middlware.authorization,reservation.postConfirmedReservations,reservation.postNotification)
 
 router.route('/admin/insurance')
 .patch(reservation.retriveInsurance)
@@ -29,4 +29,9 @@ router.post('/admin/reservation/update',reservation.updateAdminReservation)
 router.patch('/admin/reservation/complete',reservation.completeReservation)
 router.post('/user/reservation/rate',reservation.postEntityRate,reservation.rateReservation)
 router.get('/user/reservation/rate',reservation.getRates)
+
+router.route("/admin/notification")
+.get(reservation.getNotification)
+.patch(reservation.deleteNotifiaction)
+
 module.exports = router;

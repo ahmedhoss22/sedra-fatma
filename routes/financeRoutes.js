@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const financeController=require('../controller/financeController')
 const expensesUpload=require('../middlewares/expensesUpload')
-const middlwares=require("../middlewares/middleware")
+const middlwares=require("../middlewares/middleware");
 
 router.route('/expenses')
 .post(expensesUpload,financeController.postExpenses)
@@ -33,5 +33,11 @@ router.route('/banktransaction')
 .get(financeController.getBankTransaction)
 router.delete('/banktransaction/delete/:id',financeController.deleteBankTransaction)
 router.post('/banktransaction/update',financeController.updateBankTransaction)
+
+router.post("/payment",financeController.postPayment)
+router.route("/payment/:id")
+.post(financeController.updatePayment)
+.patch(financeController.deletePayment)
+
 
 module.exports = router;

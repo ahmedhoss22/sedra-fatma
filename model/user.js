@@ -4,11 +4,15 @@ const bcrypt=require('bcrypt')
 
   const UserSchema = new Schema({
     name: { type: String, trim: true, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    email: { type: String,  unique: true ,required:true},
+    password: { type: String,required:true},
     phone: { type: Number, required: true, minlength: 7 },
     phoneVerification: { type: Boolean, default: false },
-    image:{type:String,trim:true}
+    image:{type:String,trim:true},
+    nationalId: { type: Number,},
+    phone2: { type: Number},
+    address: { type: String, trim: true},
+    reservations: [{ type: Schema.Types.ObjectId, ref: 'reservations' }]
   });
   
 UserSchema.index({ email: 1 }, { unique: true });

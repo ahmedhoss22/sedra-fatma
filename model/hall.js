@@ -9,7 +9,7 @@ const hallSchema=new Schema({
     price:{type:Number,trim:true,required:true},
     capacity:{type:String,trim:true,require:true},
     rate:{type:Array,default:[]},
-    details:{type:String,trim:true}
+    details:{type:String,trim:true},
 })
 const Hall=mongoose.model('hall',hallSchema)
 module.exports=Hall

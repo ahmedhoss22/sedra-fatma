@@ -1,7 +1,7 @@
 const { expensesValidation ,drawsValidation , paypalValidation} = require("../validation/financeValidation")
 const getDateToday = require('../middlewares/dateToday')
 const { Draws ,Expenses,Paypal,OnlinePayment,BankTransaction} = require("../model/finance")
-
+const Reservation=require("../model/reservation")
 
 const finance={
     postExpenses:async(req,res)=>{
@@ -279,6 +279,58 @@ const finance={
             res.status(500).send({error:error.message})
         }
     },
+    postPayment:async(req,res)=>{
+        try {
+            console.log(req.body);
+            Reservation.findByIdAndUpdate(req.body.id,{ $push: { payment: {...req.body,_id:new Date().getTime()} } },{ new: true })
+                .then(() =>res.send())
+                .catch((error)=>{
+                    console.log(error.message);
+                    res.status(500).send({error:error.message})
+                })
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({error:error.message})
+        }
+    },
+    updatePayment:async(req,res)=>{
+        try {
+            console.log(req.body);
+            await Reservation.findByIdAndUpdate(
+                req.body.id,
+                { $set:{ [`payment.${req.body.index}`]: req.body }},
+                { 
+                    new: true,
+                }
+            ).then(() =>res.send())
+                .catch((error)=>{
+                    console.log(error.message);
+                    res.status(500).send({error:error.message})
+                })
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({error:error.message})
+        }
+    },
+    deletePayment:async (req,res)=>{
+        try {
+            Reservation.findByIdAndUpdate(
+            req.params.id,
+            {$pull: { payment: { _id: req.body.id } } },
+            { new: true }
+        )
+            .then(() =>{
+                res.send()
+            })
+            .catch(error => {
+                console.log(error.message);
+                res.status(500).send({error:error.message})
+            });
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({error:error.message})
+        }
+    }
 }
 
 module.exports =finance

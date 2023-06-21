@@ -4,24 +4,22 @@ const Schema=mongoose.Schema
 const reservationSchema=new Schema({
     client:{
         name:{type:String,trim:true,required:true},
-        id:{type:String,trim:true},
+        id:{type:Schema.Types.ObjectId,ref:"users",trim:true},
+        phone:{type:Number,required:true}
     },
     entity:{
         name:{type:String,trim:true,required:true},
         id:{type:String,trim:true,required:true},
     },
-    finance:{
-        cost:{type:Number,required:true},
+    cost:{type:Number,required:true},
+    restored:{type:Boolean ,default :false},
+    damage:{type:Number,default:0},
+    payment:[{
+        _id: {type: Number,required:true},
         paid:{type:Number,default:0},
-        remain:{type:Number,default:0},
-        tax:{type:Number,default:0},
-        insurance:{
-            amount:{type:Number,default:0},
-            damage:{type:Number,default:0},
-            remain:{type:Number,default:0},
-            restored:{type:Boolean ,default :false}
-        }
-    },
+        insurance:{type:Number,default:0},
+        type:{type:String,required:true,trim:true},
+    }],
     period:{
         type:{type:String,trim:true}, // days or one day
         startDate:{type:String,trim:true}, 
@@ -34,9 +32,10 @@ const reservationSchema=new Schema({
     date:{type:String,trim:true,required:true},
     deferred:{type:Boolean,default:false},
     image:{type:String,trim:true},
+    type:{type:String,trim:true,required:true},     // chalet - resort - hall
     cancelRequest:{type:Boolean,default:false},
     completed:{type:Boolean,default:false},
-    employee:{type:String,required:true}
+    employee:{type:String},
 })
 const Reservation=mongoose.model('reservations',reservationSchema)
 module.exports=Reservation

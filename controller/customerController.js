@@ -1,33 +1,34 @@
-const Customer=require("../model/customer")
+const User = require("../model/user")
+const Customer=require("../model/user")
 const customerValidation = require("../validation/customerValidation")
-
 const customer={
     postCustomer:async(req,res)=>{
         try {
-            let {name,phone,phone2,address,nationalId}=req.body
+            let {name,phone,phone2,address,nationalId,email,password,}=req.body
             let {errors,isValid}=customerValidation(name,address,nationalId,phone)
             if(!isValid) return res.status(403).send({errors})
-            let customer=new Customer({name,phone,phone2,address,nationalId})
+            let customer=new Customer(req.body)
            return await customer.save()
             .then(()=>res.sendStatus(201))
             .catch((error)=>{
-                console.log(error.message);
+                
+                if (error.code==11000) return res.status(403).send({email:"Email is already taken"})
                return res.status(400).send({error:error.message})
             })
         } catch (error) {
-            console.log(error.message);
+            console.log(error.code);
             res.status(500).send({error:error.message})
         }
     },
-    getCustomer:async(req,res)=>{
+    getCustomer: async (req, res) => {
         try {
-            let customer= await Customer.find()
-            res.send(customer)
+          let customer = await User.find()
+          res.send(customer);
         } catch (error) {
-            console.log(error.message);
-            res.status(500).send({error:error.message})
+          console.log(error.message);
+          res.status(500).send({ error: error.message });
         }
-    },
+      },
     updateCustomer:async(req,res)=>{
         try {
             let {_id,name,phone,phone2,address,nationalId}=req.body
