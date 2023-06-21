@@ -24,23 +24,26 @@ const style = {
 
 function AddCutomerModal({handleClose,handleOpen,open,data:temp,update}) {    
   const { t, i18n } = useTranslation();
-  const [data,setData]=useState({name:'',nationalId:'',phone:"",phone2:"",address:''})
+  const [data,setData]=useState({name:'',nationalId:'',phone:"",phone2:"",address:'',password:"",email:'',confirmPassword:""})
  const [errors,setErrors]=useState({email:"",password:"",confirmPassword:''})
  const dispatch=useDispatch()
- useEffect(()=>{if(temp)setData({...temp})
+ useEffect(()=>{if(temp)setData({...temp,confirmPassword:temp.password})
 },[temp])
 
 function handleSubmit(e){
   e.preventDefault();
+  if(data.password !== data.confirmPassword) return setErrors({...errors,confirmPassword:"Password must be same"}) 
   let url = update? '/admin/customer/update':'/admin/customer';
   Api.post(url, data)
   .then(() => {
       dispatch(fetchCustomer())
       setData({})
+      setErrors({email:"",password:"",confirmPassword:''})
       handleClose()
   })
   .catch((err)=>{
-    console.log(err.message);
+    let emailError=err.response?.data?.email
+    if(emailError) return setErrors({...errors,email:emailError})
   })
 }
  return (
@@ -52,20 +55,37 @@ function handleSubmit(e){
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <TextField variant="outlined" fullWidth required type="text" placeholder={t("client.name")} value={data.name} onChange={(e)=>setData({...data,name:e.target.value})}/>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.name")}</InputLabel>
+                    <TextField variant="outlined" fullWidth required type="text"  value={data.name} onChange={(e)=>setData({...data,name:e.target.value})}/>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField variant="outlined" fullWidth required type="number" placeholder={t("client.id")} value={data.nationalId} onChange={(e)=>setData({...data,nationalId:e.target.value})}/>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.email")}</InputLabel>
+                    <TextField error={errors.email} helperText={errors.email} variant="outlined" fullWidth required type="email"  value={data.email} onChange={(e)=>setData({...data,email:e.target.value})}/>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField variant="outlined" fullWidth required type="number" placeholder={t("client.phone")} value={data.phone} onChange={(e)=>setData({...data,phone:e.target.value})}/>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.password")}</InputLabel>
+                    <TextField variant="outlined" fullWidth required type="password"  value={data.password} onChange={(e)=>setData({...data,password:e.target.value})}/>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField variant="outlined" fullWidth type="number" placeholder={t("client.phone2")}value={data.phone2} onChange={(e)=>setData({...data,phone2:e.target.value})}/>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.confirmPassword")}</InputLabel>
+                    <TextField variant="outlined" error={errors.confirmPassword} helperText={errors.confirmPassword} fullWidth required type="password"  value={data.confirmPassword} onChange={(e)=>setData({...data,confirmPassword:e.target.value})}/>
                 </Grid>
-                <Grid item xs={12}>
-                    <TextField variant="outlined" fullWidth required type="text" placeholder={t("client.address")} value={data.address} onChange={(e)=>setData({...data,address:e.target.value})}/>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.id")}</InputLabel>
+                    <TextField variant="outlined" fullWidth required type="number"  value={data.nationalId} onChange={(e)=>setData({...data,nationalId:e.target.value})}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.phone")}</InputLabel>
+                    <TextField variant="outlined" fullWidth required type="number"value={data.phone} onChange={(e)=>setData({...data,phone:e.target.value})}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.phone2")}</InputLabel>
+                    <TextField variant="outlined" fullWidth type="number" value={data.phone2} onChange={(e)=>setData({...data,phone2:e.target.value})}/>
+                </Grid>
+                <Grid item xs={6}>
+                    <InputLabel htmlFor="chaletImg">{t("client.address")}</InputLabel>
+                    <TextField variant="outlined" fullWidth required type="text" value={data.address} onChange={(e)=>setData({...data,address:e.target.value})}/>
                 </Grid>
                 <Grid item xs={12}>
                     <Button variant='contained' type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>{t("client.add")}</Button>

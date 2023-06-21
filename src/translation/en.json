@@ -51,7 +51,12 @@
         "address":"Address",
         "edit":"Edit",
         "delete":"Delete",
-        "add":"Add"
+        "add":"Add",
+        "email":"Email address",
+        "password":"Password",
+        "confirmPassword":"Confirm Passord",
+        "details":"Reservations",
+        "noReservations":"There is no reservations for this client"
     },
     "reports":{
         "title":"Reports Control",
@@ -132,7 +137,10 @@
         "morning":"Morning",
         "night":"Night",
         "day":"Whole Day",
-        "deferReservation":"Defer Reservation"
+        "deferReservation":"Defer Reservation",
+        "details":"Reservation Details of :",
+        "resDetails":"Details",
+        "phone":"Phone"
     },
     "insurance":{
         "hall":"Inurance Halls Control",

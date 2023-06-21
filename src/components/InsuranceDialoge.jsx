@@ -8,7 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Paper from '@mui/material/Paper';
 import { useNavigate } from 'react-router-dom';
 import Api from '../config/config';
-import { fetchInsurance, fetchReservations } from '../redux/reducers/reservation';
+import { fetchReservations } from '../redux/reducers/reservation';
 import { useDispatch } from 'react-redux';
 
 // import Draggable from 'react-draggable';
@@ -22,7 +22,7 @@ export default function InsuranceDialoge({open ,handleClose,id}) {
     const handleSubmit=()=>{
         Api.patch('/admin/insurance',{id})
         .then(()=>{
-            dispatch(fetchInsurance())
+            dispatch(fetchReservations())
             handleClose()
         })
         .catch((err)=>console.log(err.message))

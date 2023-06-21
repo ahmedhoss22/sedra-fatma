@@ -14,7 +14,7 @@ import { fetchEmploees } from './../redux/reducers/employee';
 import { Select, MenuItem } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 import UnconfirmedReservationsModal from '../modals/UnconfirmedReservationsModal';
-import { fetchReservations } from '../redux/reducers/reservation';
+import { fetchNotification, fetchReservations } from '../redux/reducers/reservation';
 import format from 'date-fns/format'
 import DeleteDialoge from './../components/DeleteDialoge';
 import ConfirmDialoge from '../components/ConfirmDialoge';
@@ -55,12 +55,19 @@ const UnConfirmedReservations = () => {
   const [confirmData,setConfirmData]=useState()
   const [confirmOpen,setConfirmOpen]=useState(false)
   const handleConfirmClose=()=>setConfirmOpen(false)
-  useEffect(()=>{dispatch(fetchReservations())},[])
+  useEffect(()=>{
+    dispatch(fetchReservations())
+    removeNotification()
+  },[])
   const handleClose = () => {
     setOpen(false)
     setTemp({})
     setUpdate(false)
   };
+  function removeNotification(){
+    Api.patch("/admin/notification",{type:"unconfirmed"})
+    .then(()=>dispatch(fetchNotification()))
+  }
   const [search,setSearch]=useState('')
   function handleDeleteOpen(id){
     setDeleteID(id)
@@ -74,7 +81,7 @@ const UnConfirmedReservations = () => {
     setTemp({clientName:data.client.name,
       startDate:data.period.startDate,
       endDate:data.period.endDate,
-      cost:data.finance.cost,
+      cost:data.cost,
       entityId:data.entity.id,
       dayPeriod:data.period.dayPeriod,
       _id:data._id
@@ -134,7 +141,7 @@ const UnConfirmedReservations = () => {
               <TableCell align="center">{row.entity.name}</TableCell>
               <TableCell align="center">{row.period.dayPeriod}</TableCell>
               <TableCell align="center">{` ${row.period.startDate}/ ${row.period.endDate}`}</TableCell>
-              <TableCell align="center">{row.finance.cost}</TableCell>
+              <TableCell align="center">{row.cost}</TableCell>
               <TableCell align="center">{row.date}</TableCell>
               {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='warning' onClick={()=>handleOpenEdit(row)}>{t("reservation.edit")}</Button></TableCell> }
               {(user.admin || (user.permissions&&user.permissions.removeReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' style={{backgroundColor:'var(--fc-now-indicator-color)'}} onClick={()=>handleDeleteOpen(row._id)}>{t("reservation.delete")}</Button></TableCell> }

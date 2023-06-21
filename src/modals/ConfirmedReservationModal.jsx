@@ -15,10 +15,11 @@ import { fetchReservations } from '../redux/reducers/reservation';
 import { fetchHall } from './../redux/reducers/hall';
 import { fetchResort } from './../redux/reducers/resort';
 import { fetchChalets } from './../redux/reducers/chalet';
-import Snackbar from '@mui/material/Snackbar';
 import { useTranslation } from 'react-i18next';
-import MuiAlert from '@mui/material/Alert';
+import { Divider } from '@material-ui/core';
 
+import MuiAlert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -72,21 +73,20 @@ useEffect(()=>{
     else setType('all')
   }
 },[temp])
-const [data,setData]=useState({contractNumber:"",startDate:"",endDate:'',dayPeriod:'',insurance:'',clientName:"",cost:'',paid:'',tax:'',clientId:''})
+const [data,setData]=useState({contractNumber:"",phone:'',startDate:"",endDate:'',dayPeriod:'',insurance:'',clientName:"",clientPhone:"",cost:'',paid:'',tax:'',clientId:''})
  useEffect(()=>{if(temp)setData(temp)},[temp])
 
 function handleSubmit(e){
   e.preventDefault();
   if(new Date (data.startDate).getTime() > new Date(data.endDate).getTime())return setTimeError("يجب ان يكون تاريخ الوصول قبل تاريخ الانتهاء")
  // if(new Date ().getTime() > new Date(data.startDate).getTime())return setTimeError("لا يمكن بداية الحجز من يوم مضى")
-  console.log("Start");
   if(parseInt(data.tax)>parseInt(data.paid) ) return setTaxError("الضريبة لايمكن ان تكون اكثر من المبلغ المدفوع")
   let url = update? '/admin/reservation/confirmed/update':'/admin/reservation/confirmed';
   console.log(data);
   Api.post(url, data)
   .then(() => {
       dispatch(fetchReservations())
-      setData({contractNumber:"",insurance:'',clientName:"",place:"",period:'',date:"",cost:'',paid:'',tax:''})
+      setData({contractNumber:"",insurance:'',clientName:"",place:"",period:'',date:"",cost:'',paid:'',tax:'',phone:'',clientPhone:""})
       handleClose()
       console.log("SAdasd");
       setTimeError('')
@@ -95,6 +95,20 @@ function handleSubmit(e){
   .catch((err)=>{
     setTimeError('')
     setTaxError('')
+    console.log(err.response.data.error);
+    setSnackOpen(true)
+  })
+}
+function handleSubmit2(e){
+  e.preventDefault();
+  let url = '/admin/reservation/confirmed/deferred';
+  Api.post(url, data)
+  .then(() => {
+      dispatch(fetchReservations())
+      setData({startDate:'',endDate:'',dayPeriod:""})
+      handleClose()
+  })
+  .catch((err)=>{
     console.log(err.response.data.error);
     setSnackOpen(true)
   })
@@ -119,6 +133,10 @@ function handleSubmit(e){
                   <TextField variant="outlined" fullWidth required type="text" value={data.clientName} onChange={(e)=>setData({...data,clientName:e.target.value})}/>
               </Grid>
               <Grid item xs={4}>
+                  <InputLabel>{t("reservation.phone")}</InputLabel>
+                  <TextField variant="outlined" fullWidth required type="text" value={data.clientPhone} onChange={(e)=>setData({...data,clientPhone:e.target.value})}/>
+              </Grid>
+             {!update&&<Grid item xs={4}>
                    <InputLabel>{t("reservation.entity")}</InputLabel>
                    <Select className={classes.select} required value={data.entity?.name} fullWidth>
                       {chalets.map((ele) => (
@@ -127,33 +145,29 @@ function handleSubmit(e){
                         </MenuItem>
                       ))}
                       {resorts.map((ele) => (
-                        <MenuItem key={ele._id} value={ele._id} onClick={() => setData({ ...data, entityId: ele._id, entityName: ele.name })}>
+                        <MenuItem key={ele._id} value={ele.name} onClick={() => setData({ ...data, entityId: ele._id, entityName: ele.name })}>
                           {ele.name}
                         </MenuItem>
                       ))}
                       {halls.map((ele) => (
-                        <MenuItem key={ele._id} value={ele._id} onClick={() => setData({ ...data, entityId: ele._id, entityName: ele.name })}>
+                        <MenuItem key={ele._id} value={ele.name} onClick={() => setData({ ...data, entityId: ele._id, entityName: ele.name })}>
                           {ele.name}
                         </MenuItem>
                       ))}
                   </Select>
-              </Grid>
+              </Grid>}
               <Grid item xs={4}>
                   <InputLabel>{t("reservation.amount")}</InputLabel>
                   <TextField variant="outlined" fullWidth required type="number"  value={data.cost} onChange={(e)=>setData({...data,cost:e.target.value})}/>
               </Grid>
-              <Grid item xs={4}>
+              {/* <Grid item xs={4}>
                   <InputLabel>{t("reservation.paid")}</InputLabel>
                   <TextField variant="outlined" fullWidth  type="number" value={data.paid} onChange={(e)=>setData({...data,paid:e.target.value})}/>
-              </Grid>
-              <Grid item xs={4}>
-                  <InputLabel>{t("reservation.tax")}</InputLabel>
-                  <TextField variant="outlined" fullWidth error={taxError} helperText={taxError} type="number" value={data.tax} onChange={(e)=>setData({...data,tax:e.target.value})}/>
-              </Grid>
-              <Grid item xs={4}>
+              </Grid> */}
+              {/* <Grid item xs={4}>
                   <InputLabel>{t("reservation.insurance")}</InputLabel>
                   <TextField variant="outlined" fullWidth  type="number" value={data.insurance?.amount} onChange={(e)=>setData({...data,insurance:{amount: e.target.value}})}/>
-              </Grid>
+              </Grid> */}
                {!update&& <Grid item xs={4}>
                     <InputLabel>{t("reservation.period")}</InputLabel>
                     <Select value={data.dayPeriod} defaultValue={data.dayPeriod} required={type=='hall'} onChange={(e)=>setData({...data,dayPeriod:e.target.value})} fullWidth>
@@ -176,7 +190,37 @@ function handleSubmit(e){
               </Grid>
           </Grid>
         </form>
+       {update && <>
+      
+        <Typography id="modal-modal-title" variant="h6" component="h2" sx={{marginBottom:3,marginTop:3}}>
+            {t("reservation.deferReservation")}
+        </Typography>
+        <form onSubmit={handleSubmit2}>
+          <Grid container spacing={2}>
+              <Grid item xs={4}>
+                    <InputLabel>{t("reservation.period")}</InputLabel>
+                    <Select value={data.dayPeriod} defaultValue={data.dayPeriod} required={type=='hall'} onChange={(e)=>setData({...data,dayPeriod:e.target.value})} fullWidth>
+                        <MenuItem value={'صباحية'}>{t("reservation.morning")}</MenuItem>
+                        <MenuItem value={'مسائية'}>{t("reservation.night")}</MenuItem>
+                        <MenuItem value={'كامل اليوم'}>{t("reservation.day")}</MenuItem>
+                    </Select>
+              </Grid>
+              <Grid item xs={4}>
+                   <InputLabel>{t("reservation.arrive")}</InputLabel>
+                   <TextField variant="outlined" fullWidth required type="date" value={data.startDate} onChange={(e)=>setData({...data,startDate:e.target.value})}/>
+              </Grid>
+              <Grid item xs={4}>
+                   <InputLabel>{t("reservation.leave")}</InputLabel>
+                   <TextField variant="outlined" fullWidth required type="date" value={data.endDate} onChange={(e)=>setData({...data,endDate:e.target.value})}/>
+              </Grid>
+              <Grid item xs={12}>
+                   <Button variant='contained' type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>{t("reservation.defer")}</Button>
+              </Grid>
+          </Grid>
+        </form>
+        </>}
       </Box>
+      
     </Modal>
     <Snackbar open={snackOpen} autoHideDuration={6000} onClose={()=>setSnackOpen(false)}>
           <Alert onClose={()=>setSnackOpen(false)} severity="warning" sx={{ width: '100%' }}>

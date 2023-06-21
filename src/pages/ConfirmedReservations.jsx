@@ -15,11 +15,12 @@ import AddPaypal from '../modals/AddPaypal';
 import { Select, MenuItem } from '@mui/material';
 import { makeStyles } from '@material-ui/core/styles';
 import ConfirmedReservationModal from '../modals/ConfirmedReservationModal';
-import { fetchReservations } from './../redux/reducers/reservation';
-import DeferredModal from '../modals/DeferredModal';
+import { fetchNotification, fetchReservations } from './../redux/reducers/reservation';
+// import DeferredModal from '../modals/DeferredModal';
 import DeleteDialoge from './../components/DeleteDialoge';
 import CompleteDialoge from '../components/CompleteDialoge';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   select: {
@@ -34,26 +35,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const ConfirmerdReservarions = () => {
+  const navigate=useNavigate()
   const { t, i18n } = useTranslation();
   const [open, setOpen] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
   const [update,setUpdate]=useState(false)
   const [deleteID,setDeleteID]=useState()
   const [complete,setComplete]=useState(false)
-  const [selectedOption, setSelectedOption] = useState(1);
-  const handleOptionChange = (event) => setSelectedOption(event.target.value);
-  const [id,setId]=useState()
+  const data=useSelector((state)=>state.reservation.value.confirmed)
   const [temp,setTemp]=useState()
   const user=useSelector((state)=>state.employee.value.user)
   const [deleteOpen,setDeleteOpen]=useState(false)
+  console.log(data);
   const [tempComplete,setTempComplete]=useState(false)
   const handleOpen = () => setOpen(true);
-  const handleOpen2 = () => setOpen2(true);
   const handleDeleteClose=()=> setDeleteOpen(false)
-  const classes = useStyles();
   const handleClose = () => {
     setOpen(false)
-    setOpen2(false)
     setTemp({})
     setUpdate(false)
     setUpdate(false)
@@ -61,8 +58,14 @@ const ConfirmerdReservarions = () => {
   };
   const [search,setSearch]=useState('')
   const dispatch=useDispatch()
-  const data=useSelector((state)=>state.reservation.value.confirmed)
-   useEffect(()=>{dispatch(fetchReservations())},[])
+   useEffect(()=>{
+    dispatch(fetchReservations())
+    removeNotification()
+  },[])
+  function removeNotification(){
+    Api.patch("/admin/notification",{type:"confirmed"})
+    .then(()=>dispatch(fetchNotification()))
+  }
   function handleDeleteOpen(id){
     setDeleteID(id)
     setDeleteOpen(true)
@@ -70,18 +73,17 @@ const ConfirmerdReservarions = () => {
   function handleOpenEdit(data,status){
     setTemp({...data,
       clientName:data.client.name,
+      clientPhone:data.client.phone,
       startDate:data.period.startDate,
       dayPeriod:data.period.dayPeriod,
       endDate:data.period.endDate,
-      cost:data.finance.cost,
-      paid:data.finance.paid,
-      tax:data.finance.tax,
-      insurance:data.finance.insurance
+      cost:data.cost,
+      insurance:data.insurance
     })
     if(status=='edit'){
       setOpen(true)
       setUpdate(true)
-    }else { setOpen2(true)}
+    }
   }
   function completeOpen(data){
       setComplete(true)
@@ -114,11 +116,7 @@ const ConfirmerdReservarions = () => {
             <TableCell align='center' className='table-row'>{t("reservation.client")}</TableCell>
             <TableCell align='center' className='table-row'>{t("reservation.entity")}</TableCell>
             <TableCell align='center'width={170}  className='table-row'>{t("reservation.period")}</TableCell>
-            <TableCell align='center' className='table-row'>{t("reservation.amount")}</TableCell>
-            <TableCell align='center' className='table-row'>{t("reservation.insurance")}</TableCell>
-            <TableCell align='center' className='table-row'>{t("reservation.paid")}</TableCell>
             {/* <TableCell align='center' className='table-row'>المتبقي</TableCell> */}
-            <TableCell align='center' className='table-row'>{t("reservation.tax")}</TableCell>
             <TableCell align='center'width={140} className='table-row'>{t("date")}</TableCell>
             {(user.admin || (user.permissions&&user.permissions.deferreReservation))&&<TableCell align='center' className='table-row'></TableCell>}
             {(user.admin || (user.permissions&&user.permissions.removeReservation))&&<TableCell align='center' className='table-row'></TableCell>}
@@ -134,15 +132,11 @@ const ConfirmerdReservarions = () => {
               <TableCell align="center"> {row.entity?.name}</TableCell>
               {row.period.startDate!==row.period.endDate&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.endDate}`}</TableCell>}
               {row.period.startDate==row.period.endDate&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.dayPeriod}`}</TableCell>}
-              <TableCell align="center"> {row.finance.cost}</TableCell>
-              <TableCell align="center"> {row.finance.insurance?.amount}</TableCell>
-              <TableCell align="center"> {row.finance.paid}</TableCell>
               {/* <TableCell align="center"> {row.finance.remain}</TableCell> */}
-              <TableCell align="center"> {row.finance.tax}</TableCell>
               <TableCell align="center"> {row.date }</TableCell>
-              {(user.admin || (user.permissions&&user.permissions.deferreReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='primary' onClick={()=>handleOpenEdit(row)}>{t("reservation.defer")}</Button></TableCell> }
               {(user.admin || (user.permissions&&user.permissions.removeReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' style={{backgroundColor:'var(--fc-now-indicator-color)'}} onClick={()=>handleDeleteOpen(row._id)}>{t("reservation.delete")}</Button></TableCell> }
-              {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='warning' onClick={()=>handleOpenEdit(row,'edit')}>{t("reservation.edit")}</Button></TableCell> }
+              {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='info' onClick={()=>handleOpenEdit(row,'edit')}>{t("reservation.edit")}</Button></TableCell> }
+              {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='warning' onClick={()=>navigate(`/reservationDetails/${row._id}`)}>{t("reservation.resDetails")}</Button></TableCell> }
               {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' disabled={row.completed} size='small' color='secondary' onClick={()=>completeOpen(row)}>{t("reservation.complete")}</Button></TableCell> }
             </TableRow>
           ))}
@@ -151,7 +145,7 @@ const ConfirmerdReservarions = () => {
     </TableContainer>
           <DeleteDialoge open={deleteOpen} handleClose={handleDeleteClose} url={"/admin/reservation/delete/"} id={deleteID}/>
           <ConfirmedReservationModal update={update} handleClose={handleClose} data={temp} handleOpen={handleOpen} open={open}/>
-          <DeferredModal update={update} handleClose={handleClose} data={temp} handleOpen={handleOpen2} open={open2}/>
+          {/* <DeferredModal update={update} handleClose={handleClose} data={temp} handleOpen={handleOpen2} open={open2}/> */}
           <CompleteDialoge handleClose={handleClose} data={tempComplete} open={complete}/>
 </div>
   )

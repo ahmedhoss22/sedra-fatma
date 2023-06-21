@@ -13,6 +13,7 @@ import Api from './../config/config';
 import AddCutomerModal from '../modals/AddCustomer';
 import { fetchCustomer } from './../redux/reducers/customer';
 import { useTranslation } from 'react-i18next';
+import UserReservationsDetails from '../modals/UserReservationsDetails';
 
 const Customers = () => {
   const user=useSelector((state)=>state.employee.value.user)
@@ -21,11 +22,13 @@ const Customers = () => {
   const [temp,setTemp]=useState()
   const dispatch=useDispatch()
   const [update,setUpdate]=useState(false)
+  const [details,setDetails]=useState({open:false,id:'',name:''})
   useEffect(()=>{dispatch(fetchCustomer())},[])
   const handleOpen = () => setOpen(true);
   const handleClose = () =>{
     setUpdate(false)
     setOpen(false)
+    setDetails({open:false,id:''})
   }
   const [search,setSearch]=useState('')
   let data=useSelector((state)=>state.customer.value.data)
@@ -39,8 +42,10 @@ const Customers = () => {
     setOpen(true)
     setUpdate(true)
   }
+  console.log(details);
   let filteredData=data
   if(search) filteredData=filteredData.filter((ele)=>ele.name.includes(search))
+  console.log(data);
   return (
     <div  style={{direction:i18n.language=='en'?'ltr':'rtl'}}>
     {(user.admin || (user.permissions&&user.permissions.addClient))?<div className="cont">
@@ -54,10 +59,12 @@ const Customers = () => {
           <TableHead className='tablehead'>
             <TableRow >
               <TableCell align='center' className='table-row'>{t("client.name")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("client.email")}</TableCell>
               <TableCell align='center' className='table-row'>{t("client.id")}</TableCell>
               <TableCell align='center' className='table-row'>{t("client.phone")}</TableCell>
               <TableCell align='center' className='table-row'>{t("client.phone2")}</TableCell>
               <TableCell align='center' className='table-row'>{t("client.address")}</TableCell>
+              <TableCell align='center' className='table-row'></TableCell>
               <TableCell align='center' className='table-row'></TableCell>
               <TableCell align='center' className='table-row'></TableCell>
             </TableRow>
@@ -66,10 +73,12 @@ const Customers = () => {
             {filteredData.map((row,ind) => (
               <TableRow key={ind} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell align="center"> {row.name}</TableCell>
+                <TableCell align="center"> {row.email}</TableCell>
                 <TableCell align="center"> {row.nationalId}</TableCell>
                 <TableCell align="center">{row.phone}</TableCell>
                 <TableCell align="center">{row.phone2}</TableCell>
                 <TableCell align="center">{row.address}</TableCell>
+                <TableCell align="center"><Button variant='contained' size='small' color='primary' onClick={()=>setDetails({open:true,id:row._id,name:row.name})}>{t("client.details")}</Button></TableCell> 
                 <TableCell align="center"><Button variant='contained' size='small' color='warning' onClick={()=>handleOpenEdit(row)}>{t("client.edit")}</Button></TableCell> 
                 <TableCell align="center"><Button variant='contained' size='small' color='error' onClick={()=>handleDelete(row._id)}>{t("client.delete")}</Button></TableCell>
               </TableRow>
@@ -78,6 +87,7 @@ const Customers = () => {
         </Table>
       </TableContainer>
             <AddCutomerModal update={update} handleClose={handleClose} data={temp} handleOpen={handleOpen} open={open}/>
+            <UserReservationsDetails handleClose={handleClose} data={temp} open={details.open} id={details.id} name={details.name}/>
     </div>:<h3 style={{textAlign:"center"}}>Sorry, this page not available</h3>}
     </div>
   )

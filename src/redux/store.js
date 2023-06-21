@@ -7,6 +7,7 @@ import finance from './reducers/finance';
 import customer from './reducers/customer';
 import reservation from './reducers/reservation';
 import rates from './reducers/rates';
+import services from './reducers/services';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     customer,
     reservation,
     rates,
-        
+    services,
+    
   },
 });

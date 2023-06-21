@@ -10,12 +10,11 @@ import Paper from '@mui/material/Paper';
 import { Select, MenuItem } from '@mui/material';
 import "../scss/addChalets.scss"
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInsurance } from '../redux/reducers/reservation';
 import Api from '../config/config';
 import InsuranceDialoge from '../components/InsuranceDialoge';
-import { fetchChalets } from './../redux/reducers/chalet';
 import InsuranceFinanceModal from './../modals/InsuranceFinanceModal';
 import { useTranslation } from 'react-i18next';
+import { fetchReservations } from '../redux/reducers/reservation';
 
 const InsurancesChalet = () => {
 
@@ -23,7 +22,7 @@ const InsurancesChalet = () => {
   const dispatch=useDispatch()
   const [search,setSearch]=useState('')
   const { t, i18n } = useTranslation();
-  const [selectedOption, setSelectedOption] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(0);
   const [tempID,setTempId]=useState()
   const [open,setOpen]=useState(false)
   const [openModel,setOpenModel]=useState(false)
@@ -40,13 +39,10 @@ const InsurancesChalet = () => {
     setTempId('')
     setOpen(false)
   }
-  let data=useSelector((state)=>state.reservation.value.insurance)
-  const chalet=useSelector((state)=>state.chalet.value.data)
-  const chaletIds=chalet.map((ele)=>ele._id)
-  data=data.filter((ele)=>chaletIds.includes(ele.entity.id))
+  let reservations=useSelector((state)=>state.reservation.value.confirmed)
+  let data= reservations.filter((ele)=>ele.type=='chalet')
   useEffect(()=>{
-    dispatch(fetchInsurance())
-    dispatch(fetchChalets())
+    dispatch(fetchReservations())
   },[])
   const OpenSubmit=(id)=>{
     setTempId(id)
@@ -80,7 +76,6 @@ const InsurancesChalet = () => {
             <TableCell align='center' className='table-row'>{t("insurance.employee")}</TableCell>
             <TableCell align='center' className='table-row'>{t("insurance.amount")}</TableCell>
             <TableCell align='center' className='table-row'>{t("insurance.damage")}</TableCell>
-            <TableCell align='center' className='table-row'>{t("insurance.remain")}</TableCell>
             <TableCell align='center' className='table-row'>{t("insurance.returned")}</TableCell>
             <TableCell align='center' className='table-row'>{t("date")}</TableCell>
             <TableCell align='center' className='table-row'></TableCell>
@@ -90,11 +85,10 @@ const InsurancesChalet = () => {
         <TableBody>
           {filteredData.map((row,ind) => (
             <TableRow key={ind} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell  align="center" scope="row"> {row.clientName}</TableCell>
-              <TableCell align="center">{row.employee}</TableCell>
-              <TableCell  align="center" scope="row"> {row.finance.insurance}</TableCell>
-              <TableCell align="center">{row.finance.damage}</TableCell>
-              <TableCell align="center">{row.finance.remain}</TableCell>
+              <TableCell  align="center" scope="row"> {row?.client?.name}</TableCell>
+              <TableCell align="center">{row?.employee}</TableCell>
+              <TableCell  align="center" scope="row"> {row.payment.reduce((prev,cur)=>prev+=cur.insurance,0)}</TableCell>
+              <TableCell align="center">{row?.damage}</TableCell>
               <TableCell align="center">{row.restored?t("insurance.returned"):t("insurance.notReturned")}</TableCell>
               <TableCell align="center">{row.date}</TableCell>
               {!row.restored && <TableCell align="center"><Button variant='contained' style={{backgroundColor:"var(--primary)"}} size='small' onClick={()=>OpenSubmit(row._id)}>{t("insurance.return")}</Button></TableCell>}

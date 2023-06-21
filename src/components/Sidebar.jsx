@@ -32,11 +32,11 @@ import MoneyIcon from '@mui/icons-material/Money';
 import Person2Icon from '@mui/icons-material/Person2';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLogout } from '../redux/reducers/employee';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 const drawerWidth = 190;
-
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create('width', {
@@ -81,39 +81,33 @@ export default function Sidebar({isOpen,toggle}) {
   const dispatch=useDispatch()
   const { t, i18n } = useTranslation();
   const theme = useTheme();
+  const notification=useSelector((state)=>state.reservation.value.notification)
+  let notificationData = notification.map((ele)=>ele.type)
+  console.log( notificationData.includes("unconfirmed"));
+ 
+  console.log(notificationData);
   const navigate=useNavigate()
   const [open, setOpen] = React.useState(false);
   const data=[
-    {title:"لوحة التحكم" ,enTitle:"Control Panel",icon :<InboxIcon /> ,path:"/"},
-    {title:"اضافة موظفين" ,enTitle:"Add Employee",icon :<PersonAddIcon /> ,path:"/addEmployee"},
-    {title:"العملاء" ,enTitle:"Clients",icon :<Person2Icon /> ,path:"/cutomers"},
-    {title:"التقارير" ,enTitle:"Reports",icon :<ArticleIcon /> ,path:"/reports"},
-    {title:"خروج" ,enTitle:"Exit",icon :<LogoutIcon /> ,path:"/signin"},
-  ]
-  const subData=[
-    {title:"اضافة جهة",enTitle:"Add Entity",icon :<DomainAddIcon/> ,
+    {title:"لوحة التحكم" ,enTitle:"Control Panel",icon :<InboxIcon /> ,path:"/",type:1},
+    {title:"الحجوزات",enTitle:"Reservations",icon :<LibraryBooksIcon/>,type:2, notification: notificationData.includes("unconfirmed") ||  notificationData.includes("confirmed"),
     subtitle:[
-      {title:"اضافة قاعة" ,enTitle:"Add Hall",path:"/addHall"},
-      {title:"اضافة منتجع" ,enTitle:"Add Resort",path:"/addRessort"},
-      {title:"اضافة شاليه" ,enTitle:"Add Chalet",path:"/addChalet"},
-    ]},
-    {title:"الحجوزات",enTitle:"Reservations",icon :<LibraryBooksIcon/>,
-      subtitle:[
-        {title:"حجوزات غير مؤكدة" , enTitle:"Unconfirmed Reservations",path:"/unConfirmedReservations"},
-        {title:"حجوزات مؤكدة" , enTitle:"Confirmed Reservations",path:"/confirmedReservations"},
+      {title:"حجوزات غير مؤكدة" , enTitle:"Unconfirmed Reservations",path:"/unConfirmedReservations",notification:notificationData.includes("unconfirmed")},
+        {title:"حجوزات مؤكدة" , enTitle:"Confirmed Reservations",path:"/confirmedReservations",notification:notificationData.includes("confirmed"),},
         {title:"حجوزات مؤجلة" ,enTitle:"Deferred Reservations", path:"/deferredReservations"},
         {title:"حجوزات ملغية" , enTitle:"Canceled Reservations",path:"/canceledReservations"},
         {title:"طلبات الغاء الحجز" ,enTitle:"Cancel Requests", path:"/cancelRequest"},
       ]
     },
-    {title:"التأمينات",enTitle:"Insurance",icon :<PointOfSaleIcon/>,
+    {title:"التأمينات",enTitle:"Insurance",icon :<PointOfSaleIcon/>,type:2,
     subtitle:[
       {title:"تأمينات القاعات" ,enTitle:"Hall Insurance", path:"/insurances/hall"},
       {title:"تأمينات الشاليهالت" ,enTitle:"Chalet Insurance", path:"/insurances/chalet"},
       {title:"تأمينات المنتجعات" ,enTitle:"Resort Insurance", path:"/insurances/resort"},
     ]
   },
-    {title:"الحسابات النقدية",enTitle:"Finance",icon :<PaidIcon/>,
+  {title:"االخدمات" ,enTitle:"Services",icon :<ManageAccountsIcon /> ,path:"/services",type:1},
+  {title:"الحسابات النقدية",enTitle:"Finance",icon :<PaidIcon/>,type:2,
     subtitle:[
       {title:"المصروفات" ,enTitle:"Expenses", path:"/expenses"},
       {title:"السحوبات" ,enTitle:"Draws", path:"/draws"},
@@ -121,8 +115,19 @@ export default function Sidebar({isOpen,toggle}) {
       {title:"الدفع اونلاين" ,enTitle:"Online payments", path:"/onlinePayment"},
       {title:"التحويلات البنكية" ,enTitle:"Bank Transactions", path:"/bankTransactions"},
     ]
-  }
-  ]
+  },
+  {title:"العملاء" ,enTitle:"Clients",icon :<Person2Icon /> ,path:"/cutomers",type:1},
+    {title:"اضافة موظفين" ,enTitle:"Add Employee",icon :<PersonAddIcon /> ,path:"/addEmployee",type:1},
+    {title:"التقارير" ,enTitle:"Reports",icon :<ArticleIcon /> ,path:"/reports",type:1},
+    {title:"اضافة جهة",enTitle:"Add Entity",icon :<DomainAddIcon/>,type:2 ,
+    subtitle:[
+      {title:"اضافة قاعة" ,enTitle:"Add Hall",path:"/addHall"},
+      {title:"اضافة منتجع" ,enTitle:"Add Resort",path:"/addRessort"},
+      {title:"اضافة شاليه" ,enTitle:"Add Chalet",path:"/addChalet"},
+    ]},
+  {title:"خروج" ,enTitle:"Exit",icon :<LogoutIcon /> ,path:"/signin",type:1},
+]
+
   function handleClick(ele){
     if(ele.enTitle=="Exit") {
        localStorage.removeItem("adminToken")
@@ -148,6 +153,7 @@ export default function Sidebar({isOpen,toggle}) {
             </ListItemButton>
           </ListItem>
           {data.map((ele, index) => (
+            ele.type==1?
           <ListItem key={ele.title} disablePadding sx={{ display: 'block' }}>
             <Link to={ele.path} style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItemButton sx={{ minHeight: 48, justifyContent: isOpen ? 'initial' : 'center', px: 2.5 }} style={{paddingTop:0}} onClick={()=>handleClick(ele)}>
@@ -157,42 +163,35 @@ export default function Sidebar({isOpen,toggle}) {
                 <ListItemText style={{ color: "#fff" }} primary={i18n.language=='en'?ele.enTitle: ele.title} sx={{ opacity: isOpen ? 1 : 0 }} />
               </ListItemButton>
             </Link>
-          </ListItem>
+          </ListItem>:
+                <ListItem key={ele.title} disablePadding sx={{display:"block"}}>
+                <ListItemButton  sx={{ minHeight: 48, justifyContent: isOpen ? 'initial' : 'center', px: 2.5,}}>
+                  <ListItemIcon style={{color:"#fff",paddingTop:0,paddingBottom:0,position:"relative"}} sx={{ minWidth: 0, mr: isOpen ? 3 : 'auto', justifyContent: 'center'}} >
+                        {ele.icon} <span style={{display:ele.notification?'inline':"none"}} className='notification'></span>
+                  </ListItemIcon>
+                  <ListItemText style={{color:"#fff"}} sx={{ opacity: isOpen ? 1 : 0 }} >
+                    <Accordion>
+                      <AccordionSummary expandIcon={<ExpandMoreIcon style={{color:"#fff",padding:"0"}}/>} aria-controls="panel1a-content" id="panel1a-header">
+                        <Typography color="#fff" >{i18n.language=='en'?ele.enTitle: ele.title}</Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {ele.subtitle.map((ele)=>(
+                          <ListItem  disablePadding sx={{ display: 'block' }}>
+                            <Link to={ele.path} style={{ textDecoration: 'none', color: 'inherit' }}>
+                              <ListItemButton sx={{ minHeight: 48, justifyContent: isOpen ? 'initial' : 'center', px: 2.5,}}>
+                              <span style={{display:ele.notification?'inline':"none"}} className='notification sub-notification'></span>
+                                <ListItemText style={{color:"#fff"}} primary={i18n.language=='en'?ele.enTitle: ele.title} sx={{ opacity: isOpen ? 1 : 0 }} />
+                              </ListItemButton>
+                            </Link>
+                          </ListItem>
+                        ))
+                        }
+                      </AccordionDetails>
+                  </Accordion>
+                  </ListItemText>
+                </ListItemButton>
+              </ListItem>
           ))}-
-       {subData.map((ele)=>{
-           return(
-            <ListItem key={ele.title} disablePadding sx={{display:"block"}}>
-              <ListItemButton  sx={{ minHeight: 48, justifyContent: isOpen ? 'initial' : 'center', px: 2.5,}}>
-                <ListItemIcon style={{color:"#fff",paddingTop:0,paddingBottom:0}} sx={{ minWidth: 0, mr: isOpen ? 3 : 'auto', justifyContent: 'center'}} >
-                      {ele.icon}
-                </ListItemIcon>
-                <ListItemText style={{color:"#fff"}} sx={{ opacity: isOpen ? 1 : 0 }} >
-                  <Accordion>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon style={{color:"#fff",padding:"0"}}/>} aria-controls="panel1a-content" id="panel1a-header">
-                      <Typography color="#fff" >{i18n.language=='en'?ele.enTitle: ele.title}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {ele.subtitle.map((ele)=>(
-                        <ListItem  disablePadding sx={{ display: 'block' }}>
-                          <Link to={ele.path} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <ListItemButton sx={{ minHeight: 48, justifyContent: isOpen ? 'initial' : 'center', px: 2.5,}}>
-                              <ListItemText style={{color:"#fff"}} primary={i18n.language=='en'?ele.enTitle: ele.title} sx={{ opacity: isOpen ? 1 : 0 }} />
-                            </ListItemButton>
-                          </Link>
-                        </ListItem>
-                      ))
-                      }
-                    </AccordionDetails>
-                </Accordion>
-                </ListItemText>
-              </ListItemButton>
-            </ListItem>
-           )
-          }) 
-          }
-    
-
-   
         </List>
       </Drawer>
     </Box>

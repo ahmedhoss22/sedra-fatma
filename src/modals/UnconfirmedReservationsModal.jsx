@@ -68,7 +68,6 @@ useEffect(()=>{
 function handleSubmit(e){
   e.preventDefault();
   if(new Date (data.startDate).getTime() >= new Date(data.endDate).getTime())return setTimeError("يجب ان يكون تاريخ الوصول قبل تاريخ الانتهاء")
-  console.log(new Date (data.startDate).getTime ,new Date (data.endDate).getTime );
   let url = update? '/admin/reservation/update':'/admin/reservation';
   Api.post(url, data)
   .then(() => {
@@ -82,7 +81,6 @@ function handleSubmit(e){
     if(err.response.status==403) setNameError("هذا العميل لديه حجز بالفعل")
   })
 }
-  console.log(data);
 return (
     <div>
     <Modal style={{direction:i18n.language=='en'?'ltr':"rtl"}} open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >

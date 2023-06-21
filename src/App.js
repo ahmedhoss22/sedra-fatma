@@ -30,6 +30,9 @@ import Signin from './pages/Signin';
 import English from "./assets/en.jpg"
 import { useTranslation } from 'react-i18next';
 import Loading from './components/Loading';
+import ReservationDetails from './pages/ReservationDetails';
+import Services from './pages/Services';
+import { fetchNotification } from './redux/reducers/reservation';
 
 function App() {
   const [loading,setLoading]=useState(false)
@@ -37,7 +40,7 @@ function App() {
   if(localStorage.getItem('adminToken')) dispath(fetchUserData())
   const { t, i18n } = useTranslation();
   const [open, setOpen]=useState(true)
-
+  useEffect(()=>{dispath(fetchNotification())})
   useEffect(()=>{
     setLoading(true)
     setTimeout(()=>{
@@ -73,6 +76,8 @@ function App() {
           <Route path='/cutomers' element={logedin? <Customers/>:<Signin/>}/>
           <Route path='/cancelRequest' element={logedin? <CancelRequest/>:<Signin/>}/>
           <Route path='/signin' element={<Signin/>}/>
+          <Route path='/reservationDetails/:id' element={<ReservationDetails/>}/>
+          <Route path='/services' element={<Services/>}/>
           <Route path='*' element={logedin? <Dashboard/>:<Signin/>}/>
         </Routes>
         <Loading open={loading}/>

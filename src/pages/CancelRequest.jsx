@@ -59,7 +59,7 @@ const CancelRequest = () => {
               <TableCell align="center">{row.entity.name}</TableCell>
               <TableCell align="center">{row.period.dayPeriod}</TableCell>
               <TableCell align="center">{` ${row.period.startDate}/ ${row.period.endDate}`}</TableCell>
-              <TableCell align="center">{row.finance.cost}</TableCell>
+              <TableCell align="center">{row.cost}</TableCell>
               <TableCell align="center">{row.date}</TableCell>
               <TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' style={{backgroundColor:'var(--fc-now-indicator-color)'}} onClick={()=>handleDeleteOpen(row._id)}>{t("reservation.delete")}</Button></TableCell> 
             </TableRow>

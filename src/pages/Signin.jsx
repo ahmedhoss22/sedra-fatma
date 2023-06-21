@@ -36,7 +36,7 @@ const Signin = () => {
     <div className='contain'>
       <div className='cont'>
         <div className='logo'>
-          <img src={logo} alt='log' />
+          <img src={logo} alt='logo' />
         </div>
         <h2>سدرة فاطمة للمناسبات و الايجار اليومي</h2>
         <form onSubmit={handleSubmit}>

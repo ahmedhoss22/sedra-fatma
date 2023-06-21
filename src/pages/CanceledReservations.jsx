@@ -65,7 +65,7 @@ const CanceledReservations = () => {
               <TableCell align="center">{row.entity.name}</TableCell>
               {row.period.startDate!==row.period.endDate&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.endDate}`}</TableCell>}
               {row.period.startDate==row.period.endDate&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.dayPeriod}`}</TableCell>}
-              <TableCell align="center">{row.finance.cost}</TableCell>
+              <TableCell align="center">{row.cost}</TableCell>
               <TableCell align="center">{row.date}</TableCell>
             </TableRow>
           ))}

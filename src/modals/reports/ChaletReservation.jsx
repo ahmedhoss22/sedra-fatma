@@ -13,11 +13,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { fetchReservations } from '../../redux/reducers/reservation';
+import { fetchReservations, fetchReservationsServices } from '../../redux/reducers/reservation';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useTranslation } from 'react-i18next';
 import "../../scss/report.scss"
-import { fetchChalets } from './../../redux/reducers/chalet';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -32,13 +31,18 @@ const style = {
 function ChaletReservation({handleClose,handleOpen,open,startDate,endDate}) {    
  const dispatch=useDispatch()
   const { t, i18n } = useTranslation();
-  let data=useSelector((state)=>state.reservation.value.reservationRevenue)
- const chaletData=useSelector((state)=>state.chalet.value.data)
- let chaletsId=chaletData.map((ele)=>ele._id)
- data =data.filter((ele)=>chaletsId.includes(ele.entity.id))
- useEffect(()=>{
+  let reservations=useSelector((state)=>state.reservation.value.confirmed)
+  let data = reservations.filter((ele)=>ele.type=='chalet')
+  let reservationServices=useSelector((state)=>state.reservation.value.reservationServices)
+  const getTotalRevenue=(id,paid)=>{
+    let totalPaid = paid.reduce((prev,cur)=>prev+=(cur.paid+cur.insurance),0)
+    let services=reservationServices.filter((ele)=>ele.reservationId==id)
+    let totalServices=services.reduce((prev,cur)=>prev+=cur.price,0)
+    return totalPaid - totalServices
+  }
+  useEffect(()=>{
     dispatch(fetchReservations())
-    dispatch(fetchChalets())
+    dispatch(fetchReservationsServices())
 },[])
  let filteredData=data
  if(startDate) filteredData=filteredData.filter((ele)=>(new Date(startDate).getTime())<=(new Date(ele.date).getTime()))
@@ -70,7 +74,7 @@ function ChaletReservation({handleClose,handleOpen,open,startDate,endDate}) {
                     <TableCell component="th" align="center" scope="row"> {row.contractNumber}</TableCell>
                     <TableCell component="th" align="center" scope="row"> {row.client.name}</TableCell>
                     <TableCell component="th" align="center" scope="row"> {row.entity.name}</TableCell>
-                    <TableCell component="th" align="center" scope="row"> {row.finance.remain}</TableCell>
+                    <TableCell component="th" align="center" scope="row"> {getTotalRevenue(row._id,row?.payment)}</TableCell>
                     <TableCell component="th" align="center" scope="row"> {row.date}</TableCell>
                   </TableRow>
                 ))}

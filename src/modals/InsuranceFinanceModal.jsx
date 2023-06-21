@@ -27,7 +27,6 @@ const InsuranceFinanceModal = ({handleClose,handleOpen,open,data:temp}) => {
  const dispatch=useDispatch()
  useEffect(()=>{if(temp)setData({...temp,damage:temp.finance.damage,insurance:temp.finance.insurance})
 },[temp])
-console.log(data);
 function handleSubmit(e){
   e.preventDefault();
   Api.patch('/admin/insurance/finance', data)
