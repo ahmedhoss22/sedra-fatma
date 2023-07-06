@@ -1,0 +1,37 @@
+.userSetting{
+    direction: rtl;
+    margin-top: 20px;
+    padding: 20px;
+    form{
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        margin: auto;
+        input{
+            direction: ltr;
+        }
+    }
+    .data{
+        margin-top: 40px;
+        img{
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 50%;
+            margin-bottom: 20px !important;
+        }
+        #icon{
+            margin: auto;
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .imgLabel{
+            margin: auto;
+        }
+    }
+}
+.css-1rwt2y5-MuiButtonBase-root-MuiButton-root{
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+}

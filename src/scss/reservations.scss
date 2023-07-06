@@ -1,0 +1,36 @@
+.css-1e6y48t-MuiButtonBase-root-MuiButton-root{
+    color: #fff !important;
+    margin: 30vh auto !important;
+    width: 200px;
+    border-radius: 80px !important;
+}
+.css-b6lsxj-MuiButtonBase-root-MuiCardActionArea-root{
+    cursor: default !important;
+}
+.container{
+    // direction: rtl;
+    h2{
+        margin: 40px 10px;
+    }
+    .status{
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        margin: 10px 0;
+        p{
+            color: rgba(0, 0, 0, 0.6);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .rate{
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    }
+}
+.reserve{
+    direction: rtl;
+    min-height: 30vh;
+}

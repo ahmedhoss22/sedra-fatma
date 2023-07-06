@@ -1,0 +1,28 @@
+.hall{
+    width: 80% !important;
+    margin: 20px auto !important;
+    .data{
+        text-align: right;
+        margin-top: 10px;
+        .icon{
+            color: var(--primary);
+            margin-left: 10px;
+        }
+    }
+    .price-box{
+        text-align: center;
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        word-spacing: 3px;
+        .price{
+            color: var(--primary);
+        }
+    }
+}
+.pagination{
+    justify-content: center !important;
+    color: var(--primary) !important;
+    margin-top: 50px !important;
+}

@@ -1,0 +1,86 @@
+/* Override default styles for react-date-range */
+.react-date-range {
+    .rdrMonth {
+      background: #fff;
+    }
+  
+    .rdrDayStartPreview,
+    .rdrDayEndPreview,
+    .rdrSelected,
+    .rdrInRange {
+      background-color: var(--dark) !important;
+      color: #fff !important;
+    }
+  
+    .rdrDayToday,
+    .rdrDayPassive,
+    .rdrDayDisabled,
+    .rdrDayActive:active,
+    .rdrDayActive:focus,
+    .rdrDayActive:hover,
+    .rdrDayEndEdge,
+    .rdrDayStartEdge,
+    .rdrDayInPreview {
+      color: var(--dark) !important;
+      background-color: #fff !important;
+      border-color: var(--dark) !important;
+    }
+  
+    .rdrDayEndEdge,
+    .rdrDayStartEdge {
+      border-color: var(--dark) !important;
+    }
+  
+    .rdrDayToday {
+      border-color: var(--dark) !important;
+      color: #fff !important;
+      background-color: var(--dark) !important;
+    }
+  
+    .rdrDayPassive,
+    .rdrDayDisabled {
+      color: #ccc !important;
+    }
+  
+    .rdrDayPassive:hover {
+      background-color: transparent !important;
+      color: var(--dark) !important;
+      border-color: var(--dark) !important;
+    }
+  
+    .rdrDayActive:active,
+    .rdrDayActive:focus,
+    .rdrDayActive:hover,
+    .rdrDayInPreview {
+      background-color: var(--dark) !important;
+      color: #fff !important;
+      border-color: var(--dark) !important;
+    }
+  }
+.rdrSelected , .rdrSelected:hover {
+    background-color: var(--dark) !important;
+    border-color: var(--dark) !important;
+}
+.rdrDayHovered{
+    border-color: var(--dark) !important;
+
+}
+.rdrDayHovered:not(.rdrInRange):not(.rdrStartEdge):not(.rdrEndEdge) {
+    border-color: var(--dark) !important;
+  }
+  .rdrDayInRange, .rdrStartEdge, .rdrEndEdge ,.rdrInRange{
+    background-color: var(--dark) !important;
+    color: #fff !important;
+    border-color: var(--dark);
+  }
+  .rdrInRange {
+    border: 1px solid var(--dark) !important;
+  }
+  .css-qfz70r-MuiFormGroup-root {
+    margin: 30px 30px 10px !important;
+  }
+  .css-j204z7-MuiFormControlLabel-root .MuiFormControlLabel-label{
+    font-size: 1.2rem;
+    font-weight: 700;
+    direction: rtl;
+  }
