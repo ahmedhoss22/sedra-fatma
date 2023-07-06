@@ -2,7 +2,7 @@ import axios from "axios"
 
 const Api=axios.create({
     baseURL:"http://localhost:5000",
-    // baseURL:"https://sedra-fatma.onrender.com",
+    // baseURL:"http://54.158.14.76:5000",
     headers: {
         'Content-Type': 'application/json'
     },

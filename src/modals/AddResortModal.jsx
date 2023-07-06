@@ -15,14 +15,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
 };
 
 function AddResortModal({handleClose,handleOpen,open}) {    
- const [data,setData]=useState({name:'',file:'',area:"",address:"",pool:'',games:'',kitchen:'',bath:'',price:'',details:''})
+ const [data,setData]=useState({name:'',file:'',area:"",address:"",pool:'',games:'',kitchen:'',bath:'',nightPrice:'',morningPrice:'',wholeDayPrice:'',details:''})
  const inputFile=useRef()
   const { t, i18n } = useTranslation();
   const dispatch=useDispatch()
@@ -42,7 +42,7 @@ function handleSubmit(e){
     } 
    }).then(() => {
       dispatch(fetchResort())
-      setData({name:'',file:'',games:'',kitchen:'',pool:'',price:'',details:'',area:''})
+      setData({name:'',file:'',games:'',kitchen:'',pool:'',nightPrice:'',morningPrice:'',wholeDayPrice:'',details:'',area:''})
       handleClose()
   });
 }
@@ -59,29 +59,37 @@ function handleSubmit(e){
                   <InputLabel htmlFor="chaletImg">{t("entity.image")}</InputLabel>
                   <TextField ref={inputFile} fullWidth id='chaletImg' variant="outlined" required name="file" type="file"  InputProps={{inputProps: { multiple: true}}}  onChange={uploadFiles}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <InputLabel htmlFor="chaletImg">{t("entity.name")}</InputLabel>
                     <TextField variant="outlined" required type="text"  value={data.name} onChange={(e)=>setData({...data,name:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                    <InputLabel htmlFor="chaletImg">{t("entity.area")}</InputLabel>
                     <TextField variant="outlined" required type="number"  value={data.area} onChange={(e)=>setData({...data,area:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <InputLabel htmlFor="chaletImg">{t("entity.kitchen")}</InputLabel>
                     <TextField variant="outlined" required type="number" value={data.kitchen} onChange={(e)=>setData({...data,kitchen:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
+                    <InputLabel htmlFor="chaletImg">{t("entity.morningPrice")}</InputLabel>
+                    <TextField variant="outlined" required type="number" value={data.morningPrice} onChange={(e)=>setData({...data,morningPrice:e.target.value})}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <InputLabel htmlFor="chaletImg">{t("entity.nightPrice")}</InputLabel>
+                    <TextField variant="outlined" required type="number" value={data.nightPrice} onChange={(e)=>setData({...data,nightPrice:e.target.value})}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <InputLabel htmlFor="chaletImg">{t("entity.wholePrice")}</InputLabel>
+                    <TextField variant="outlined" required type="number" value={data.wholeDayPrice} onChange={(e)=>setData({...data,wholeDayPrice:e.target.value})}/>
+                </Grid>
+                <Grid item xs={4}>
                    <InputLabel htmlFor="chaletImg">{t("entity.pools")}</InputLabel>
                     <TextField variant="outlined" required type="number" value={data.pool} onChange={(e)=>setData({...data,pool:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                    <InputLabel htmlFor="chaletImg">{t("entity.games")}</InputLabel>
                     <TextField variant="outlined" required type="number" value={data.games} onChange={(e)=>setData({...data,games:e.target.value})}/>
-                </Grid>
-                <Grid item xs={6}>
-                   <InputLabel htmlFor="chaletImg">{t("entity.price")}</InputLabel>
-                    <TextField variant="outlined" required type="number" value={data.price} onChange={(e)=>setData({...data,price:e.target.value})}/>
                 </Grid>
                 <Grid item xs={12}>
                    <InputLabel htmlFor="chaletImg">{t("entity.details")}</InputLabel>

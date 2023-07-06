@@ -44,8 +44,9 @@ const AddHall = () => {
               <TableCell align='center' className='table-row'>{t("entity.hallsNumber")}</TableCell>
               <TableCell align='center' className='table-row'>{t("entity.rooms")}</TableCell>
               <TableCell align='center' className='table-row'>{t("entity.capacity")}</TableCell>
-              <TableCell align='center' className='table-row'>{t("entity.price")}</TableCell>
-              {(user.admin || (user.permissions&&user.permissions.removeEntity))&&<TableCell align='center' className='table-row'>{t("entity.delete")}</TableCell>}
+              <TableCell align='center' className='table-row'>{t("entity.morningPrice")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("entity.nightPrice")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("entity.wholePrice")}</TableCell>              {(user.admin || (user.permissions&&user.permissions.removeEntity))&&<TableCell align='center' className='table-row'>{t("entity.delete")}</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -55,7 +56,9 @@ const AddHall = () => {
                 <TableCell align="center">{row.halls}</TableCell>
                 <TableCell align="center">{row.rooms}</TableCell>
                 <TableCell align="center">{row.capacity}</TableCell> 
-                <TableCell align="center">{row.price}</TableCell> 
+                <TableCell align="center">{row?.price?.morning}</TableCell> 
+                <TableCell align="center">{row?.price?.night}</TableCell> 
+                <TableCell align="center">{row?.price?.wholeDay}</TableCell>
                 {(user.admin || (user.permissions&&user.permissions.removeEntity))&&<TableCell align="center"><Button variant='contained' color='error' onClick={()=>handleDelete(row._id)}>{t("entity.delete")}</Button></TableCell>}
               </TableRow>
             ))}

@@ -42,6 +42,7 @@ const InsurancesHalls = () => {
   }
   let halls=useSelector((state)=>state.reservation.value.confirmed)
   let data = halls.filter((ele)=>ele.type=='hall')
+  console.log(data);
   useEffect(()=>{
     dispatch(fetchReservations())
   },[])
@@ -50,7 +51,10 @@ const InsurancesHalls = () => {
     setOpen(true)
   }
   const handleOptionChange = (event) => setSelectedOption(event.target.value);
-  let filteredData= data 
+  let filteredData= data.filter((ele)=> {
+    let sum = ele.payment.reduce((prev,cur)=>prev+=cur.insurance,0)
+    return sum
+  })
    if(selectedOption==1) filteredData = data.filter((ele)=>!ele.restored)
    if(selectedOption==2) filteredData = data.filter((ele)=>ele.restored)
    if(search) filteredData= data.filter((ele)=>ele.clientName.includes(search))
@@ -80,7 +84,7 @@ const InsurancesHalls = () => {
             <TableCell align='center' className='table-row'>{t("insurance.returned")}</TableCell>
             <TableCell align='center' className='table-row'>{t("date")}</TableCell>
             <TableCell align='center' className='table-row'></TableCell>
-            <TableCell align='center' className='table-row'></TableCell>
+            {/* <TableCell align='center' className='table-row'></TableCell> */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -93,8 +97,7 @@ const InsurancesHalls = () => {
               <TableCell align="center">{row.restored?t("insurance.returned"):t("insurance.notReturned")}</TableCell>
               <TableCell align="center">{row.date}</TableCell>
               {!row.restored && <TableCell align="center"><Button variant='contained' style={{backgroundColor:"var(--primary)"}} size='small' onClick={()=>OpenSubmit(row._id)}>{t("insurance.return")}</Button></TableCell>}
-              {!row.restored && <TableCell align="center"><Button variant='contained' style={{backgroundColor:"var(--primary)"}} size='small' onClick={()=>handleEdit(row)}>{t("insurance.edit")}</Button></TableCell>}
-
+              {/* {!row.restored && <TableCell align="center"><Button variant='contained' style={{backgroundColor:"var(--primary)"}} size='small' onClick={()=>handleEdit(row)}>{t("insurance.edit")}</Button></TableCell>} */}
             </TableRow>
           ))}
         </TableBody>

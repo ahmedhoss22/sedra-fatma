@@ -45,3 +45,19 @@ thead{
         margin-bottom: 20px !important;
     }
 }
+.hide{
+    display: none !important;
+}
+@media print{
+    .shareon{
+        display: table-row !important;
+    }
+    .shareoff{
+        display: none!important;
+    }
+    // .shareon {
+    //     display: block;
+    //     position: absolute;
+    //     top: 0;
+    // }
+}

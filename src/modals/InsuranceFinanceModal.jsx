@@ -25,7 +25,7 @@ const InsuranceFinanceModal = ({handleClose,handleOpen,open,data:temp}) => {
   const { t, i18n } = useTranslation();
   const [data,setData]=useState({insurance:'',damage:''})
  const dispatch=useDispatch()
- useEffect(()=>{if(temp)setData({...temp,damage:temp.finance.damage,insurance:temp.finance.insurance})
+ useEffect(()=>{if(temp)setData({...temp,damage:temp?.finance?.damage,insurance:temp?.finance?.insurance})
 },[temp])
 function handleSubmit(e){
   e.preventDefault();

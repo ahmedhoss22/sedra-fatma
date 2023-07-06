@@ -21,6 +21,7 @@ import ConfirmDialoge from '../components/ConfirmDialoge';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -39,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const UnConfirmedReservations = () => {
+  const navigate=useNavigate()
   const dispatch=useDispatch()
   const { t, i18n } = useTranslation();
   const user=useSelector((state)=>state.employee.value.user)
@@ -78,7 +80,9 @@ const UnConfirmedReservations = () => {
     setConfirmOpen(true)
   }
   function handleOpenEdit(data){
-    setTemp({clientName:data.client.name,
+    setTemp({
+      clientName:data.client.name,
+      clientId:data.client?.id,
       startDate:data.period.startDate,
       endDate:data.period.endDate,
       cost:data.cost,
@@ -91,9 +95,7 @@ const UnConfirmedReservations = () => {
   }
   function handleAccept(){
     setConfirmOpen(false)
-    Api.patch('/admin/reservation',{
-      _id:confirmData._id,
-      period:confirmData.period.dayPeriod,endDate:confirmData.period.endDate,startDate:confirmData.period.startDate})
+    Api.patch('/admin/reservation',confirmData)
     .then(()=>dispatch(fetchReservations()))
     .catch((err)=>{if(err.response.status==403) setSnackOpen(true)})
  }
@@ -117,13 +119,14 @@ const UnConfirmedReservations = () => {
   <MenuItem value={3}>الشاليهات</MenuItem>
   <MenuItem value={4}>المنتجعات</MenuItem>
 </Select> */}
-      {(user.admin || (user.permissions&&user.permissions.addReservation))&&<Button onClick={handleOpen} variant='contained' className='btn'>{t("reservation.addReservation")}</Button>}
+      {/* {(user.admin || (user.permissions&&user.permissions.addReservation))&&<Button onClick={handleOpen} variant='contained' className='btn'>{t("reservation.addReservation")}</Button>} */}
     </div>
     <TableContainer component={Paper} className='table-print'>
       <Table  aria-label="simple table">
         <TableHead className='tablehead'>
           <TableRow >
             <TableCell align='center' className='table-row'>{t("reservation.client")}</TableCell>
+            <TableCell align='center' className='table-row'>{t("reservation.phone")}</TableCell>
             <TableCell align='center' className='table-row'>{t("reservation.entity")}</TableCell>
             <TableCell align='center' className='table-row'>{t("reservation.period")}</TableCell> 
             <TableCell align='center' className='table-row'>{t("reservation.duration")}</TableCell>
@@ -132,19 +135,22 @@ const UnConfirmedReservations = () => {
             {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align='center' className='table-row'></TableCell>}
             {(user.admin || (user.permissions&&user.permissions.removeReservation))&&<TableCell align='center' className='table-row'></TableCell>}
             {(user.admin || (user.permissions&&user.permissions.acceptReservation))&&<TableCell align='center' className='table-row'></TableCell>}
+            {(user.admin || (user.permissions&&user.permissions.acceptReservation))&&<TableCell align='center' className='table-row'></TableCell>}
           </TableRow>
         </TableHead>
         <TableBody>
           {filteredData.map((row,ind) => (
             <TableRow key={ind} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell align="center"> {row.client.name}</TableCell>
+              <TableCell align="center"> {row.client.phone}</TableCell>
               <TableCell align="center">{row.entity.name}</TableCell>
-              <TableCell align="center">{row.period.dayPeriod}</TableCell>
+              <TableCell align="center">{row.period.type=='days'?'يوم كامل':row.period.dayPeriod}</TableCell>
               <TableCell align="center">{` ${row.period.startDate}/ ${row.period.endDate}`}</TableCell>
               <TableCell align="center">{row.cost}</TableCell>
               <TableCell align="center">{row.date}</TableCell>
-              {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='warning' onClick={()=>handleOpenEdit(row)}>{t("reservation.edit")}</Button></TableCell> }
               {(user.admin || (user.permissions&&user.permissions.removeReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' style={{backgroundColor:'var(--fc-now-indicator-color)'}} onClick={()=>handleDeleteOpen(row._id)}>{t("reservation.delete")}</Button></TableCell> }
+              {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='info' onClick={()=>handleOpenEdit(row)}>{t("reservation.edit")}</Button></TableCell> }
+              {(user.admin || (user.permissions&&user.permissions.editReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='warning' onClick={()=>navigate(`/unConfermidReservationDetails/${row._id}`)}>{t("reservation.resDetails")}</Button></TableCell> }
               {(user.admin || (user.permissions&&user.permissions.acceptReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' color='success' onClick={()=>handleConfirmOpen(row)}>{t("reservation.confirm")}</Button></TableCell> }
             </TableRow>
           ))}

@@ -16,6 +16,7 @@ import Paper from '@mui/material/Paper';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { fetchBanckTransaction, fetchExpenses, fetchOnlinePayments, fetchPaypal } from '../../redux/reducers/finance';
 import { useTranslation } from 'react-i18next';
+import { fetchReservations } from '../../redux/reducers/reservation';
 
 const style = {
   position: 'absolute',
@@ -35,6 +36,7 @@ function GeneralReport({handleClose,open,startDate,endDate}) {
  let onlinePayment=useSelector((state)=>state.finance.value.onlinePayment)
  let banktransaction=useSelector((state)=>state.finance.value.banktransaction)
  let expenses=useSelector((state)=>state.finance.value.expenses)
+ let reservations=useSelector((state)=>state.reservation.value.confirmed)
  useEffect(()=>{
      dispatch(fetchBanckTransaction())
      dispatch(fetchOnlinePayments())
@@ -46,18 +48,71 @@ function GeneralReport({handleClose,open,startDate,endDate}) {
         onlinePayment=onlinePayment.filter((ele)=>(new Date(startDate).getTime())<=(new Date(ele.date).getTime()))
         banktransaction=banktransaction.filter((ele)=>(new Date(startDate).getTime())<=(new Date(ele.date).getTime()))
         expenses=expenses.filter((ele)=>(new Date(startDate).getTime())<=(new Date(ele.date).getTime()))
+        reservations=reservations.filter((ele)=>(new Date(startDate).getTime())<=(new Date(ele.date).getTime()))
     }
     if(endDate) {
         paypal=paypal.filter((ele)=>(new Date(endDate).getTime())>=(new Date(ele.date).getTime()))
         onlinePayment=onlinePayment.filter((ele)=>(new Date(endDate).getTime())>=(new Date(ele.date).getTime()))
         banktransaction=banktransaction.filter((ele)=>(new Date(endDate).getTime())>=(new Date(ele.date).getTime()))
         expenses=expenses.filter((ele)=>(new Date(endDate).getTime())>=(new Date(ele.date).getTime()))
+        reservations=reservations.filter((ele)=>(new Date(endDate).getTime())>=(new Date(ele.date).getTime()))
     }
+  
+    function getSum(type){
+      switch (type){
+         case 'hall':
+            let halls= reservations.filter((ele)=>ele.type=='hall')
+            halls =halls.map((ele)=> {
+              let sum =  ele.payment.reduce((prev,cur)=>prev+=cur.paid,0)
+              return sum
+              })
+            let hallsum= halls.reduce((cur,prev)=>cur+=prev,0)
+            return hallsum
+        break;
+          case "resort":
+            let resorts= reservations.filter((ele)=>ele.type=='resort')
+            resorts =resorts.map((ele)=> {
+              let sum =  ele.payment.reduce((prev,cur)=>prev+=cur.paid,0)
+              return sum
+              })
+              let resortsum= resorts.reduce((cur,prev)=>cur+=prev,0)
+              return resortsum
+          break;
+          case "chalet":
+            let chalets= reservations.filter((ele)=>ele.type=='chalet')
+            chalets =chalets.map((ele)=> {
+              let sum =  ele.payment.reduce((prev,cur)=>prev+=cur.paid,0)
+              return sum
+              })
+              let chaletsum= chalets.reduce((cur,prev)=>cur+=prev,0)
+              return chaletsum
+          break;
+        default :
+        console.log(reservations);
+          let reservationsArray =reservations.map((ele)=> {
+            let sum =  ele.payment.reduce((prev,cur)=>prev+=cur.paid,0)
+            return sum
+            })
+          let reservationSum= reservationsArray.reduce((cur,prev)=>cur+=prev,0)
+          return reservationSum
+      }
+    }
+
     const paypalSum=paypal.reduce((prev,curr)=>prev+=parseInt(curr.amount) ,0)
     const onlinePaymentSum=onlinePayment.reduce((prev,curr)=>prev+=parseInt(curr.amount) ,0)
     const banktransactionSum=banktransaction.reduce((prev,curr)=>prev+=parseInt(curr.amount) ,0)
     const expensesSum=expenses.reduce((prev,curr)=>prev+=parseInt(curr.amount) ,0)
-    let data=[{sum:paypalSum,label:"بايبال"},{sum:onlinePaymentSum,label:"الدفع اونلاين"},{sum:banktransactionSum,label:"الحولات البنكية"},{sum:expensesSum,label:"المصروفات"}]
+
+    let data=[
+    {sum:getSum("chalet"),label :"ايرادات الشاليهات" },
+    {sum:getSum("resort"),label :"ايرادات المنتجعات" },
+    {sum:getSum("hall"),label :"ايرادات القاعات" },
+    {sum:getSum("all"),label :" ايرادات الحجوزات مجمعة" },
+    // {sum:paypalSum,label:"بايبال"},
+    {sum:onlinePaymentSum,label:"الدفع اونلاين"},
+    // {sum:banktransactionSum,label:"الحولات البنكية"},
+    {sum:getSum("all")+paypalSum+onlinePaymentSum+banktransactionSum,label:"اجمالي الايرادات" },
+    {sum:expensesSum,label:"المصروفات"}]
  return ( 
     <div >
       <Modal open={open} onClose={handleClose} style={{direction:i18n.language=='en'?'ltr':"rtl",overflow:"scroll"}} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >

@@ -1,4 +1,4 @@
-import React ,{useEffect , useState ,useRef} from 'react';
+ import React ,{useEffect , useState ,useRef} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -17,6 +17,7 @@ import { fetchChalets } from './../redux/reducers/chalet';
 import { fetchReservations } from '../redux/reducers/reservation';
 import format from 'date-fns/format'
 import { useTranslation } from 'react-i18next';
+import { fetchCustomer } from '../redux/reducers/customer';
 
 const style = {
     position: 'absolute',
@@ -50,11 +51,13 @@ const UnconfirmedReservationsModal = ({handleClose,open,data:temp,update}) => {
   const [nameError,setNameError]=useState('')
   const halls=useSelector((state)=>state.hall.value.data)
   const resorts=useSelector((state)=>state.resort.value.data)
-  const chalets=useSelector((state)=>state.chalet.value.data)
+let users=useSelector((state)=>state.customer.value.data)
+const chalets=useSelector((state)=>state.chalet.value.data)
   useEffect(()=>{
     dispatch(fetchChalets())
     dispatch(fetchHall())
     dispatch(fetchResort())
+    dispatch(fetchCustomer())
   },[])
 useEffect(()=>{
   if(temp){
@@ -81,22 +84,33 @@ function handleSubmit(e){
     if(err.response.status==403) setNameError("هذا العميل لديه حجز بالفعل")
   })
 }
+console.log(temp);
+const handleUserSelect=(id)=>{
+  let user = users.find((ele)=>ele._id==id)
+  setData({...data,clientId:id,clientName:user.name,phone:user.phone})
+}
 return (
     <div>
     <Modal style={{direction:i18n.language=='en'?'ltr':"rtl"}} open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description" >
       <Box sx={style} className='model'>
         <Typography id="modal-modal-title" variant="h6" component="h2" sx={{marginBottom:5}}>
-                {t("reservation.addReservation")}
+                تعديل الحجز
         </Typography>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={2}>
               <Grid item xs={6}>
                   <InputLabel>{t("reservation.client")}</InputLabel>
-                  <TextField error={nameError} helperText={nameError} variant="outlined" fullWidth required type="text"  value={data.clientName} onChange={(e)=>setData({...data,clientName:e.target.value})}/>
+              <Select fullWidth value={data.clientId} required onChange={(e)=> handleUserSelect(e.target.value)}>
+                    {
+                      users.map((ele)=>(
+                          <MenuItem value={ele._id}>{ele.name}</MenuItem>
+                      ))
+                    }
+                </Select>
               </Grid>
                <Grid item xs={6}>
                 <InputLabel>{t("reservation.period")}</InputLabel>
-                    <Select value={data.dayPeriod} defaultValue={data.dayPeriod} required={type=='hall'} onChange={(e)=>setData({...data,dayPeriod:e.target.value})} fullWidth>
+                    <Select value={data.dayPeriod} defaultValue={data.period?.dayPeriod} required={type=='hall'} onChange={(e)=>setData({...data,dayPeriod:e.target.value})} fullWidth>
                         <MenuItem value={'صباحية'}>{t("reservation.morning")}</MenuItem>
                         <MenuItem value={'مسائية'}>{t("reservation.night")}</MenuItem>
                         <MenuItem value={'كامل اليوم'}>{t("reservation.day")}</MenuItem>

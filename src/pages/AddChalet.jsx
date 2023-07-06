@@ -29,6 +29,7 @@ const AddChalet = () => {
     .then((res)=>dispatch(fetchChalets()))
     .catch((err)=>console.log(err.response.data))
   }
+  console.log(data);
   return (
     <div className="cont"  style={{direction:i18n.language=='en'?'ltr':'rtl'}}>
       <h2>{t("entity.chalet")}</h2>
@@ -47,7 +48,9 @@ const AddChalet = () => {
               <TableCell align='center' className='table-row'>{t("entity.lounge")}</TableCell>
               <TableCell align='center' className='table-row'>{t("entity.kitchen")}</TableCell>
               <TableCell align='center' className='table-row'>{t("entity.bathrooms")}</TableCell>
-              <TableCell align='center' className='table-row'>{t("entity.price")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("entity.morningPrice")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("entity.nightPrice")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("entity.wholePrice")}</TableCell>
               {(user.admin || (user.permissions&&user.permissions.removeEntity))&&<TableCell align='center' className='table-row'>{t("entity.delete")}</TableCell>}
             </TableRow>
           </TableHead>
@@ -61,7 +64,9 @@ const AddChalet = () => {
                 <TableCell align="center">{row.lounge}</TableCell>
                 <TableCell align="center">{row.kitchen}</TableCell>
                 <TableCell align="center">{row.bath}</TableCell>
-                <TableCell align="center">{row.price}</TableCell> 
+                <TableCell align="center">{row?.price?.morning}</TableCell> 
+                <TableCell align="center">{row?.price?.night}</TableCell> 
+                <TableCell align="center">{row?.price?.wholeDay}</TableCell> 
                 {(user.admin || (user.permissions&&user.permissions.removeEntity))&&<TableCell align="center"><Button variant='contained' color='error' onClick={()=>handleDelete(row._id)}>{t("entity.delete")}</Button></TableCell>}
               </TableRow>
             ))}

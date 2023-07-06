@@ -56,7 +56,8 @@ const resorts=useSelector((state)=>state.resort.value.data)
 const chalets=useSelector((state)=>state.chalet.value.data)
 const [snackOpen,setSnackOpen]=useState(false)
 const [timeError,setTimeError]=useState('')
-const [taxError,setTaxError]=useState('')
+const today = new Date();
+const dateString = `${today.getFullYear()}-${('0' + (today.getMonth() + 1)).slice(-2)}-${('0' + today.getDate()).slice(-2)}`;
 const [type,setType]=useState('all')
 useEffect(()=>{
   dispatch(fetchChalets())
@@ -76,13 +77,12 @@ useEffect(()=>{
 const [data,setData]=useState({contractNumber:"",phone:'',startDate:"",endDate:'',dayPeriod:'',insurance:'',clientName:"",clientPhone:"",cost:'',paid:'',tax:'',clientId:''})
  useEffect(()=>{if(temp)setData(temp)},[temp])
 
+ console.log(data);
 function handleSubmit(e){
   e.preventDefault();
   if(new Date (data.startDate).getTime() > new Date(data.endDate).getTime())return setTimeError("يجب ان يكون تاريخ الوصول قبل تاريخ الانتهاء")
  // if(new Date ().getTime() > new Date(data.startDate).getTime())return setTimeError("لا يمكن بداية الحجز من يوم مضى")
-  if(parseInt(data.tax)>parseInt(data.paid) ) return setTaxError("الضريبة لايمكن ان تكون اكثر من المبلغ المدفوع")
   let url = update? '/admin/reservation/confirmed/update':'/admin/reservation/confirmed';
-  console.log(data);
   Api.post(url, data)
   .then(() => {
       dispatch(fetchReservations())
@@ -90,11 +90,9 @@ function handleSubmit(e){
       handleClose()
       console.log("SAdasd");
       setTimeError('')
-      setTaxError('')
   })
   .catch((err)=>{
     setTimeError('')
-    setTaxError('')
     console.log(err.response.data.error);
     setSnackOpen(true)
   })
@@ -102,7 +100,8 @@ function handleSubmit(e){
 function handleSubmit2(e){
   e.preventDefault();
   let url = '/admin/reservation/confirmed/deferred';
-  Api.post(url, data)
+  if(new Date (data.startDate).getTime() > new Date(data.endDate).getTime())return setTimeError("يجب ان يكون تاريخ الوصول قبل تاريخ الانتهاء")
+  Api.post(url, {...data,period:{startDate:data.startDate,endDate:data.endDate,type:data?.period?.type}})
   .then(() => {
       dispatch(fetchReservations())
       setData({startDate:'',endDate:'',dayPeriod:""})
@@ -179,11 +178,11 @@ function handleSubmit2(e){
               {!update&&
               <Grid item xs={4}>
                    <InputLabel>{t("reservation.arrive")}</InputLabel>
-                   <TextField variant="outlined" fullWidth required type="date" error={timeError} helperText={timeError} value={data.startDate} onChange={(e)=>setData({...data,startDate:e.target.value})}/>
+                   <TextField variant="outlined" fullWidth required InputProps={{inputProps: {min: dateString}}} type="date" error={timeError} helperText={timeError} value={data.startDate} onChange={(e)=>setData({...data,startDate:e.target.value})}/>
               </Grid>}
               {!update&&<Grid item xs={4}>
                    <InputLabel>{t("reservation.leave")}</InputLabel>
-                   <TextField variant="outlined" fullWidth required type="date" value={data.endDate} onChange={(e)=>setData({...data,endDate:e.target.value})}/>
+                   <TextField variant="outlined" fullWidth required InputProps={{inputProps: {min: data.startDate}}} type="date" value={data.endDate} onChange={(e)=>setData({...data,endDate:e.target.value})}/>
               </Grid>}
               <Grid item xs={12}>
                   {update? <Button variant='contained' type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>{t("reservation.edit")}</Button>:<Button variant='contained' type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>{t("reservation.add")}</Button>}
@@ -207,11 +206,11 @@ function handleSubmit2(e){
               </Grid>
               <Grid item xs={4}>
                    <InputLabel>{t("reservation.arrive")}</InputLabel>
-                   <TextField variant="outlined" fullWidth required type="date" value={data.startDate} onChange={(e)=>setData({...data,startDate:e.target.value})}/>
+                   <TextField variant="outlined" fullWidth InputProps={{inputProps: {min: dateString}}} required  type="date"error={timeError} helperText={timeError} value={data.startDate} onChange={(e)=>setData({...data,startDate:e.target.value})}/>
               </Grid>
               <Grid item xs={4}>
                    <InputLabel>{t("reservation.leave")}</InputLabel>
-                   <TextField variant="outlined" fullWidth required type="date" value={data.endDate} onChange={(e)=>setData({...data,endDate:e.target.value})}/>
+                   <TextField variant="outlined" fullWidth InputProps={{inputProps: {min: dateString}}} required type="date" value={data.endDate} onChange={(e)=>setData({...data,endDate:e.target.value})}/>
               </Grid>
               <Grid item xs={12}>
                    <Button variant='contained' type='submit' fullWidth style={{backgroundColor:"#B38D46",height:"50px" ,fontSize:"1rem"}}>{t("reservation.defer")}</Button>

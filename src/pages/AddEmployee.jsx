@@ -82,6 +82,7 @@ const AddEmployee = () => {
             <TableRow >
               <TableCell align='center' className='table-row'>{t("employee.name")} </TableCell>
               <TableCell align='center' className='table-row'>{t("employee.id")}</TableCell>
+              <TableCell align='center' className='table-row'>{t("employee.salary")}</TableCell>
               <TableCell align='center' className='table-row'>{t("employee.phone")}</TableCell>
               <TableCell align='center' className='table-row'>{t("employee.username")}</TableCell>
               <TableCell align='center' className='table-row'>{t("employee.permissions")}</TableCell>
@@ -94,6 +95,7 @@ const AddEmployee = () => {
               <TableRow key={ind} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                 <TableCell component="th" align="center" scope="row"> {row.name}</TableCell>
                 <TableCell component="th" align="center" scope="row"> {row.nationalId}</TableCell>
+                <TableCell align="center">{row.salary}</TableCell>
                 <TableCell align="center">{row.phone}</TableCell>
                 <TableCell align="center">{row.email}</TableCell>
                 <TableCell align="center"><Button variant='contained'  size='small' onClick={()=>handleOpen2(row)}>{t("employee.permissions")}</Button></TableCell>

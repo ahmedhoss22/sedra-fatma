@@ -1,5 +1,5 @@
 import React ,{useEffect, useState} from 'react'
-import { Grid, Link } from '@mui/material';
+import { Button, Grid, Link } from '@mui/material';
 import FullCalendar from '@fullcalendar/react' // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid' // a plugin!
 import "../scss/dashboard.scss"
@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchReservations } from '../redux/reducers/reservation';
 import { useTranslation } from 'react-i18next';
+import AddReservation from '../modals/AddReservation';
 
 const Dashboard = () => {
   const { t, i18n } = useTranslation();
@@ -15,14 +16,25 @@ const Dashboard = () => {
   const deferredData=useSelector((state)=>state.reservation.value.deferred)
   const canceled=useSelector((state)=>state.reservation.value.canceled)
   const [search,setSearch]=useState('')
+  const [modal,setModal]=useState({open:false,date:{}})
   const dispatch=useDispatch()
   const navigate=useNavigate()
-  const events=confirmedData.map((ele)=>{
+  let data= [...unConfirmedData,...confirmedData]
+  const events=data.map((ele)=>{
     return {title : `${ele.period.dayPeriod} - ${ele.client.name}`,date:ele.period.startDate}
   })
+  const handleDateClick = (arg) => {
+    const clickedDate = arg.date;
+    const formattedDate = clickedDate.toLocaleDateString();
+    alert(`Clicked date: ${formattedDate}`);
+  };
+  const handleClose= ()=>{setModal({open:false}) }
   let filteredDate=events
   if(search)filteredDate=filteredDate.filter((ele)=>ele.title.includes(search))
   useEffect(()=>{dispatch(fetchReservations())},[])
+
+
+
   return (
     <>
       <div className="container" style={{direction:i18n.language=='en'?"ltr":"rtl"}}>
@@ -60,13 +72,16 @@ const Dashboard = () => {
             <input type="text" value={search} onChange={(e)=>setSearch(e.target.value)} placeholder={t("dashboard.searchBox")}/>
           </div>
       </div>
+          <Button variant='contained' onClick={()=>setModal({open:true})} style={{backgroundColor:"var(--primary)",fontWeight:"700"}}>اضافة حجز</Button>
     <FullCalendar
         plugins={[ dayGridPlugin ]}
         // weekends={false}
         initialView="dayGridMonth"
+        dateClick={handleDateClick}
         events={filteredDate}
         />
         </div>
+        <AddReservation open={modal.open} handleClose={handleClose}/>
     </>
   )
 }

@@ -49,9 +49,15 @@ export const fetchReservationsServices= createAsyncThunk(
   const reservations = createSlice({
     name: "reservation",
     initialState: {
-      value: { confirmed:[],unConfirmed:[] ,notification:[],reservationServices:[],insurance:[],deferred:[],canceled:[],cancelRequest:[],reservationRevenue:[],data:[]},
+      value: {share:true, confirmed:[],unConfirmed:[] ,notification:[],reservationServices:[],insurance:[],deferred:[],canceled:[],cancelRequest:[],reservationRevenue:[],data:[]},
     },
     reducers: {
+      shareOn:(state)=>{
+        state.value.share=false
+      },
+      shareOff:(state)=>{
+        state.value.share=true
+      },
     },
     extraReducers: (builder) => {
       builder.addCase(fetchReservations.fulfilled, (state, action) => {
@@ -75,6 +81,6 @@ export const fetchReservationsServices= createAsyncThunk(
       });
     },
   });
-export const {} = reservations.actions
+export const {shareOn,shareOff} = reservations.actions
 
 export default reservations.reducer

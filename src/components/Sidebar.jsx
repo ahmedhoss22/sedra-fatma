@@ -35,6 +35,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLogout } from '../redux/reducers/employee';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import ManageSearchIcon from '@mui/icons-material/ManageSearch';
 
 const drawerWidth = 190;
 const openedMixin = (theme) => ({
@@ -83,13 +84,11 @@ export default function Sidebar({isOpen,toggle}) {
   const theme = useTheme();
   const notification=useSelector((state)=>state.reservation.value.notification)
   let notificationData = notification.map((ele)=>ele.type)
-  console.log( notificationData.includes("unconfirmed"));
- 
-  console.log(notificationData);
   const navigate=useNavigate()
   const [open, setOpen] = React.useState(false);
   const data=[
     {title:"لوحة التحكم" ,enTitle:"Control Panel",icon :<InboxIcon /> ,path:"/",type:1},
+    {title:"البحث السريع" ,enTitle:"Search",icon :<ManageSearchIcon /> ,path:"/search",type:1},
     {title:"الحجوزات",enTitle:"Reservations",icon :<LibraryBooksIcon/>,type:2, notification: notificationData.includes("unconfirmed") ||  notificationData.includes("confirmed"),
     subtitle:[
       {title:"حجوزات غير مؤكدة" , enTitle:"Unconfirmed Reservations",path:"/unConfirmedReservations",notification:notificationData.includes("unconfirmed")},

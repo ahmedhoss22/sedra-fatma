@@ -42,7 +42,6 @@ function IncomeReport({handleClose,handleOpen,open,startDate,endDate}) {
     dispatch(fetchPaypal())
 },[])
  let filteredData=[...paypal,...onlinePayment,...banktransaction]
- console.log(filteredData);
  if(startDate) filteredData=filteredData.filter((ele)=>(new Date(startDate).getTime())<=(new Date(ele.date).getTime()))
  if(endDate) filteredData=filteredData.filter((ele)=>(new Date(endDate).getTime())>=(new Date(ele.date).getTime()))
  return ( 

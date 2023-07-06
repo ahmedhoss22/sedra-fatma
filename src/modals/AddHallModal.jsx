@@ -16,14 +16,14 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: 600,
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
 };
 
 function AddHallModal({handleClose,handleOpen,open}) {    
- const [data,setData]=useState({name:'',file:'',rooms:'',halls:'',price:'',details:''})
+ const [data,setData]=useState({name:'',file:'',rooms:'',halls:'',nightPrice:'',morningPrice:'',wholeDayPrice:'',details:''})
  const inputFile=useRef()
 const { t, i18n } = useTranslation();
 const dispatch=useDispatch()
@@ -43,7 +43,7 @@ function handleSubmit(e){
     } 
    }).then(() => {
       dispatch(fetchHall())
-      setData({name:'',file:'',halls:"",rooms:"",price:'',details:'',capacity:''})
+      setData({name:'',file:'',halls:"",rooms:"",nightPrice:'',morningPrice:'',wholeDayPrice:'',details:'',capacity:''})
       handleClose()
   });
 }
@@ -56,29 +56,37 @@ function handleSubmit(e){
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                   <InputLabel htmlFor="chaletImg">{t("entity.image")}</InputLabel>
                   <TextField ref={inputFile} fullWidth id='chaletImg' variant="outlined" required name="file" type="file"  InputProps={{inputProps: { multiple: true}}}  onChange={uploadFiles}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                 <InputLabel htmlFor="chaletImg">{t("entity.name")}</InputLabel>
                     <TextField variant="outlined" required type="text" value={data.name} onChange={(e)=>setData({...data,name:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <InputLabel htmlFor="chaletImg">{t("entity.hallsNumber")}</InputLabel>
                     <TextField variant="outlined" required type="number" value={data.halls} onChange={(e)=>setData({...data,halls:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <InputLabel htmlFor="chaletImg">{t("entity.rooms")}</InputLabel>
                     <TextField variant="outlined" required type="number" value={data.rooms} onChange={(e)=>setData({...data,rooms:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                     <InputLabel htmlFor="chaletImg">{t("entity.capacity")}</InputLabel>
                     <TextField variant="outlined" required type="number" value={data.capacity} onChange={(e)=>setData({...data,capacity:e.target.value})}/>
                 </Grid>
-                <Grid item xs={6}>
-                    <InputLabel htmlFor="chaletImg">{t("entity.price")}</InputLabel>
-                    <TextField variant="outlined" required type="number" value={data.price} onChange={(e)=>setData({...data,price:e.target.value})}/>
+                <Grid item xs={4}>
+                    <InputLabel htmlFor="chaletImg">{t("entity.morningPrice")}</InputLabel>
+                    <TextField variant="outlined" required type="number" value={data.morningPrice} onChange={(e)=>setData({...data,morningPrice:e.target.value})}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <InputLabel htmlFor="chaletImg">{t("entity.nightPrice")}</InputLabel>
+                    <TextField variant="outlined" required type="number" value={data.nightPrice} onChange={(e)=>setData({...data,nightPrice:e.target.value})}/>
+                </Grid>
+                <Grid item xs={4}>
+                    <InputLabel htmlFor="chaletImg">{t("entity.wholePrice")}</InputLabel>
+                    <TextField variant="outlined" required type="number" value={data.wholeDayPrice} onChange={(e)=>setData({...data,wholeDayPrice:e.target.value})}/>
                 </Grid>
                 <Grid item xs={12}>
                     <InputLabel htmlFor="chaletImg">{t("entity.details")}</InputLabel>

@@ -106,7 +106,7 @@ const ConfirmerdReservarions = () => {
         <MenuItem value={3}>الشاليهات</MenuItem>
         <MenuItem value={4}>المنتجعات</MenuItem>
       </Select> */}
-      {(user.admin || (user.permissions&&user.permissions.addReservation))&&<Button onClick={handleOpen} variant='contained' className='btn'>{t("reservation.addReservation")} </Button>}
+      {/* {(user.admin || (user.permissions&&user.permissions.addReservation))&&<Button onClick={handleOpen} variant='contained' className='btn'>{t("reservation.addReservation")} </Button>} */}
     </div>
     <TableContainer component={Paper} className='table-print'>
       <Table  aria-label="simple table">
@@ -130,8 +130,8 @@ const ConfirmerdReservarions = () => {
               <TableCell align="center"> {row.contractNumber}</TableCell>
               <TableCell align="center"> {row.client.name}</TableCell>
               <TableCell align="center"> {row.entity?.name}</TableCell>
-              {row.period.startDate!==row.period.endDate&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.endDate}`}</TableCell>}
-              {row.period.startDate==row.period.endDate&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.dayPeriod}`}</TableCell>}
+              {row.period.type=='days'&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.endDate}`}</TableCell>}
+              {row.period.type=='dayPeriod'&& <TableCell align="center" > {`${row.period.startDate} / ${row.period.dayPeriod}`}</TableCell>}
               {/* <TableCell align="center"> {row.finance.remain}</TableCell> */}
               <TableCell align="center"> {row.date }</TableCell>
               {(user.admin || (user.permissions&&user.permissions.removeReservation))&&<TableCell align="center" className='row-hidden-print'><Button variant='contained' size='small' style={{backgroundColor:'var(--fc-now-indicator-color)'}} onClick={()=>handleDeleteOpen(row._id)}>{t("reservation.delete")}</Button></TableCell> }

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchReservations } from './../redux/reducers/reservation';
+import { fetchReservations, shareOff, shareOn } from './../redux/reducers/reservation';
 import logo from '../assets/Logo 1.png';
-import ShareIcon from '@mui/icons-material/Share';
 import "../scss/reservationsDetails.scss"
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -21,8 +20,13 @@ import ReservationServices from '../modals/ReservationServices';
 import ReservationFreeReservation from '../modals/ReservationFreeReservation';
 import Request from '../modals/Request';
 import Api from '../config/config';
+import html2canvas from 'html2canvas';
+import { saveAs } from 'file-saver';
+import domtoimage from 'dom-to-image';
+import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 
 const ReservationDetails = () => {
+  let share=useSelector((state)=>state.reservation.value.share)
   const {id}=useParams()
   const dispatch =useDispatch()
   const { t, i18n } = useTranslation();
@@ -38,12 +42,42 @@ const ReservationDetails = () => {
   let totalInsurance = parseFloat(reservation?.payment?.reduce((prev,cur)=>{return prev+=parseFloat(cur?.insurance)},0))
   let totalPaid = parseFloat(reservation?.payment?.reduce((prev,cur)=>{return prev+=parseFloat(cur?.paid)},0))
   let totalServices =parseFloat(servicesData.reduce((prev,cur)=>{return prev+=parseFloat(cur?.price)},0)) +parseFloat(requestDate.reduce((prev,cur)=>{return prev+=parseFloat(cur?.price)},0))
-  console.log(totalServices);
 
   useEffect(()=>{ 
     dispatch(fetchReservations())
     fetchServices()
   },[])
+
+  const handleShare =async () => {
+    await dispatch(shareOn())
+    document.body.style.backgroundColor = 'white';
+    await domtoimage.toBlob(document.body)
+    .then((blob) => {
+      saveAs(blob, 'page.png');
+    })
+    // const reader = new FileReader();
+// reader.readAsDataURL(blob); 
+// reader.onloadend = function() {
+//   const base64data = reader.result;  
+
+//   // Send the base64 string via WhatsApp using the Twilio API
+//   const accountSid = 'your_account_sid';
+//   const authToken = 'your_auth_token';
+//   const client = require('twilio')(accountSid, authToken);
+
+//   client.messages
+//     .create({
+//       body: 'Here is the screenshot',
+//       from: 'whatsapp:+14155238886', // your Twilio number
+//       to: 'whatsapp:+1234567890', // recipient's number
+//       mediaUrl: base64data
+//     })
+//     .then(message => console.log(message.sid))
+//     .done();
+// }
+    await  dispatch(shareOff())
+  };
+  
   const fetchServices = async()=>{
     await Api.get(`/admin/reservation/service/${id}`)
     .then((res)=>{
@@ -70,15 +104,14 @@ const ReservationDetails = () => {
    .then(()=> fetchServices())
   }
   const handeleDeletePayment=async(paymentId)=>{
-    console.log(paymentId);
     await Api.patch(`/admin/payment/${id}`,{id:paymentId})
     .then(()=> dispatch(fetchReservations()) )
   }
     return (
     <>
     <header>
-        <ShareIcon id="share"/>
-        <div className="details">
+        {<LocalPrintshopIcon id="share" className='onshare' onClick={()=>window.print()}/>}
+        <div className="details shareon">
             <div className='text'>
               <p>تفاصيل الحجز بجميع الخدمات</p>
               <p> اسم العميل : {reservation?.client?.name} </p>
@@ -88,8 +121,27 @@ const ReservationDetails = () => {
         </div>
     </header>
     <TableContainer component={Paper} className='table-print'>
-      <Table  aria-label="simple table" style={{border:"1px solid"}}>
-        <TableBody>
+      <Table  aria-label="simple table">
+            <TableRow style={{border:0}} className='shareon hide'  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                 <TableCell align="center" colSpan={2} style={{border:0}} className='table-data'>
+                    <img src={logo} alt='logo' height="60px" width="60px" />
+                    <h2>سدرة فاطمة</h2>
+                    <p>تفاصيل الحجز بجميع الحجوزات</p> 
+                   </TableCell>
+            </TableRow>
+        <TableBody style={{border:"1px solid"}}>
+            <TableRow className='shareon hide'  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell align="center" className='table-data'>اسم العميل</TableCell>
+              <TableCell align="center" className='table-data'> {reservation?.client?.name}</TableCell>
+            </TableRow>
+            <TableRow className='shareon hide' sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell align="center" className='table-data'>رقم العميل</TableCell>
+              <TableCell align="center" className='table-data'> {reservation?.client?.phone}</TableCell>
+            </TableRow>
+            <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell align="center" className='table-data'>رقم العقد</TableCell>
+              <TableCell align="center" className='table-data'> {reservation?.contractNumber }</TableCell>
+            </TableRow>
             <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
               <TableCell align="center" className='table-data'> مبلغ الحجز</TableCell>
               <TableCell align="center" className='table-data'> {reservation?.cost }</TableCell>
@@ -118,8 +170,8 @@ const ReservationDetails = () => {
       </Table>
     </TableContainer>
     <Divider/>
-    <div className='pay'>
-      <Button variant='contained' id="btn" onClick={()=>setPayment({...payment,open:true,update:false})}>دفعات <AddIcon/></Button>
+    <div className='pay shareoff'>
+     <Button variant='contained'  className='onshare' id="btn" onClick={()=>setPayment({...payment,open:true,update:false})}>دفعات <AddIcon/></Button>
       <TableContainer component={Paper} className='table-print'>
         <Table  aria-label="simple table">
           <TableHead className='tablehead'>
@@ -145,8 +197,8 @@ const ReservationDetails = () => {
         </Table>
       </TableContainer>
     </div>
-    <div className='pay'>
-      <Button variant='contained' id="btn" onClick={()=>setFreeServices({...freeServices,open:true,update:false})}>الخدمات المجانية <AddIcon/></Button>
+    <div className='pay shareoff'>
+      <Button variant='contained'  className='onshare' id="btn" onClick={()=>setFreeServices({...freeServices,open:true,update:false})}>الخدمات المجانية <AddIcon/></Button>
       <TableContainer component={Paper} className='table-print'>
         <Table  aria-label="simple table">
           <TableHead className='tablehead'>
@@ -172,8 +224,8 @@ const ReservationDetails = () => {
         </Table>
       </TableContainer>
     </div>
-    <div className='pay'>
-      <Button variant='contained' id="btn" onClick={()=>setServices({...services,open:true,update:false})}>الخدمات الاضافية <AddIcon/></Button>
+    <div className='pay shareoff'>
+     <Button variant='contained'  className='onshare' id="btn" onClick={()=>setServices({...services,open:true,update:false})}>الخدمات الاضافية <AddIcon/></Button>
       <TableContainer component={Paper} className='table-print'>
         <Table  aria-label="simple table">
           <TableHead className='tablehead'>
@@ -201,8 +253,8 @@ const ReservationDetails = () => {
         </Table>
       </TableContainer>
     </div>
-    <div className='pay'>
-      <Button variant='contained' id="btn" onClick={()=>setRequest({...request,open:true,update:false})}> اضافة مطلب <AddIcon/></Button>
+    <div className='pay shareoff'>
+    <Button variant='contained'  className='onshare' id="btn" onClick={()=>setRequest({...request,open:true,update:false})}> اضافة مطلب <AddIcon/></Button>
       <TableContainer component={Paper} className='table-print'>
         <Table  aria-label="simple table">
           <TableHead className='tablehead'>

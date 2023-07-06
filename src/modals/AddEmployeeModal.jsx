@@ -22,8 +22,8 @@ const style = {
 };
 
 function AddEmployeeModal({handleClose,handleOpen,open,data:temp}) {    
- const [data,setData]=useState({name:'',nationalId:'',phone:"",email:"",password:"",confirmPassword:''})
- const [errors,setErrors]=useState({email:"",password:"",confirmPassword:''})
+ const [data,setData]=useState({name:'',nationalId:'',phone:"",email:"",password:"",confirmPassword:'',salary:''})
+ const [errors,setErrors]=useState({email:"",password:"",confirmPassword:'',phone:''})
  const inputFile=useRef()
  const dispatch=useDispatch()
  useEffect(()=>{if(temp)setData({...temp,password:''})
@@ -36,17 +36,17 @@ function handleSubmit(e){
   if(data.password != data.confirmPassword) return setErrors({...errors,confirmPassword:"Password must be same"})
   if(data.password.length<8) return setErrors({...errors,password:"Password must be more than 8 characters"})
   let url = temp? '/employee/data/update':'/employee/data';
-  console.log(url);
   Api.post(url, data)
   .then(() => {
       dispatch(fetchEmploees())
-      setData({name:'',nationalId:'',phone:"",email:"",password:"",confirmPassword:''})
+      setData({name:'',nationalId:'',phone:"",email:"",password:"",confirmPassword:'',salary:''})
       handleClose()
   })
   .catch((err)=>{
-    let errMsg=err.response.data.email 
-    if(errMsg) return setErrors({email:errMsg})
-    console.log(err.message);
+    let errMsg=err.response.data 
+    if(errMsg.email) return setErrors({email:errMsg.email})
+    if(errMsg.phone) return setErrors({phone:errMsg.phone})
+    console.log(errors);
   })
 }
  return (
@@ -65,7 +65,10 @@ function handleSubmit(e){
                     <TextField variant="outlined" fullWidth required type="number" placeholder="رقم الهوية" value={data.nationalId} onChange={(e)=>setData({...data,nationalId:e.target.value})}/>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField variant="outlined" fullWidth required type="number" placeholder="رقم الهاتف" value={data.phone} onChange={(e)=>setData({...data,phone:e.target.value})}/>
+                    <TextField variant="outlined" error={errors.phone} helperText={errors.phone} fullWidth required type="number" placeholder="رقم الهاتف" value={data.phone} onChange={(e)=>setData({...data,phone:e.target.value})}/>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField variant="outlined" fullWidth required type="number" placeholder="الراتب" value={data.salary} onChange={(e)=>setData({...data,salary:e.target.value})}/>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField variant="outlined" fullWidth required type="email" error={errors.email} helperText={errors.email} placeholder="اسم المستخدم" value={data.email} onChange={(e)=>setData({...data,email:e.target.value})}/>

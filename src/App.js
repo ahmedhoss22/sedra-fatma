@@ -33,9 +33,12 @@ import Loading from './components/Loading';
 import ReservationDetails from './pages/ReservationDetails';
 import Services from './pages/Services';
 import { fetchNotification } from './redux/reducers/reservation';
+import UnConfiremdReservationDetails from './pages/UnConfiremdReservationDetails';
+import Search from './pages/Search';
 
 function App() {
   const [loading,setLoading]=useState(false)
+  let share=useSelector((state)=>state.reservation.value.share)
   const dispath=useDispatch()
   if(localStorage.getItem('adminToken')) dispath(fetchUserData())
   const { t, i18n } = useTranslation();
@@ -50,10 +53,10 @@ function App() {
 
   let logedin=useSelector((state)=>state.employee.value.logedin)
   return (
-    <div className="App" style={{marginRight:logedin?( open? '145px':"10px"):"0",transition:".3s"}}>
-         {logedin&&  i18n.language=='ar'&& <button className='translation' onClick={()=>i18n.changeLanguage('en')}><img src={Arabic} alt="arabic"/></button>}
+    <div className="App" style={{marginRight:logedin?( open && share? '145px':"10px"):"0",transition:".3s"}}>
+         {logedin&&share&&  i18n.language=='ar'&& <button className='translation' onClick={()=>i18n.changeLanguage('en')}><img src={Arabic} alt="arabic"/></button>}
           {i18n.language=='en'&& <button className='translation' onClick={()=>i18n.changeLanguage('ar')}><img src={English} alt="arabic"/></button>}
-      {logedin&& <Sidebar isOpen={open} toggle={()=>setOpen(!open)}/>}
+      {logedin&&share&& <Sidebar isOpen={open} toggle={()=>setOpen(!open)}/>}
         <Routes>
           <Route path="/" element={logedin? <Dashboard/>:<Signin/>}/>
           <Route path='/addRessort' element={logedin? <AddRessort/>:<Signin/>}/>
@@ -76,8 +79,10 @@ function App() {
           <Route path='/cutomers' element={logedin? <Customers/>:<Signin/>}/>
           <Route path='/cancelRequest' element={logedin? <CancelRequest/>:<Signin/>}/>
           <Route path='/signin' element={<Signin/>}/>
-          <Route path='/reservationDetails/:id' element={<ReservationDetails/>}/>
-          <Route path='/services' element={<Services/>}/>
+          <Route path='/reservationDetails/:id' element={logedin? <ReservationDetails/> : <Signin/>}/>
+          <Route path='/unConfermidReservationDetails/:id' element={logedin? <UnConfiremdReservationDetails/> : <Signin/>}/>
+          <Route path='/services' element={logedin? <Services/> : <Signin/>}/>
+          <Route path='/search' element={logedin? <Search/> : <Signin/>}/>
           <Route path='*' element={logedin? <Dashboard/>:<Signin/>}/>
         </Routes>
         <Loading open={loading}/>
