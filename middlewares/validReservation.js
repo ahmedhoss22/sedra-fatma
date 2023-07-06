@@ -3,44 +3,42 @@ const Reservation = require("../model/reservation");
 const validReservation={
     checkPeriod: async (req, res, nxt) => {
         try {
-            return nxt()
-            let { startDate, endDate, period, _id } = req.body;
-            console.log(period);
-            if (req.body._id) {
-                let tempResrvation = await Reservation.findOne({ _id });
-               // if (startDate == tempResrvation.period.startDate && endDate == tempResrvation.period.endDate) return nxt();
-            }
-            console.log(startDate, endDate);
-            startDate = new Date(startDate).getTime();
-            endDate = new Date(endDate).getTime();
-            if (isNaN(startDate) || isNaN(endDate)) return res.status(403).send({ error: "Invalid date format" });
+            let { period,_id} = req.body;
+            let startDate = new Date(period.startDate).getTime();
+            let endDate = new Date(period.endDate).getTime();
+            let dayPeriod=period.dayPeriod
+            console.log(startDate,endDate);
+            if (isNaN(startDate) && isNaN(endDate)) return res.status(400).send({ error: "Invalid date format" });
     
-            const reservations = await Reservation.find({ status: 'confirmed', "entity.id": req.body.entity.id });
-            let index = reservations.findIndex((ele) => ele._id == _id);
-            reservations.splice(index, 1);
+            const reservations = _id?
+            await Reservation.find({ status: 'confirmed', "entity.id": req.body.entity?.id, _id: { $ne: _id }})
+            :await Reservation.find({ status: 'confirmed', "entity.id": req.body.entity?.id});
                 let conflicted = false;
-                console.log("ASdasd");
-            reservations.forEach((ele) => {
-                let tempStart = new Date(ele.period.startDate).getTime();
-                let tempEnd = new Date(ele.period.endDate).getTime();
-                let tempPeriod = ele.period.dayPeriod; // Define tempPeriod here
-                console.log(tempPeriod,period.dayPeriod);
-                if (tempStart <= endDate && tempEnd >= endDate && (tempPeriod == 'كامل اليوم' || tempPeriod == period.dayPeriod)) conflicted = true;  
-                console.log(conflicted,1);
-                if (tempStart <= startDate && tempEnd >= endDate && (tempPeriod == 'كامل اليوم' || tempPeriod == period.dayPeriod)) conflicted = true;
-                console.log(conflicted,2);
-                if (tempStart <= startDate && tempEnd >= startDate && (tempPeriod == 'كامل اليوم' || tempPeriod == period.dayPeriod)) conflicted = true;
-                console.log(conflicted,3);
-                if (tempStart >= startDate && tempEnd <= endDate && (tempPeriod == 'كامل اليوم' || tempPeriod == period.dayPeriod)) conflicted = true;
-                console.log(conflicted,4);
-                if (startDate == endDate && startDate == tempStart && endDate == tempEnd) {
-                    if (tempPeriod == 'كامل اليوم') conflicted = true;
-                    if (tempPeriod == period.dayPeriod) conflicted = true;
+                switch (period.type){
+                    case "days":
+                        reservations.forEach((ele) => {
+                            let tempStart = new Date(ele.period.startDate).getTime();
+                            let tempEnd = new Date(ele.period.endDate).getTime();
+                            if (tempStart <= endDate && tempEnd >= endDate) conflicted = true;  
+                            if (tempStart <= startDate && tempEnd >= endDate) conflicted = true;
+                            if (tempStart <= startDate && tempEnd >= startDate) conflicted = true;
+                            if (tempStart >= startDate && tempEnd <= endDate) conflicted = true;
+                            console.log(ele.period.startDate , period.startDate);
+                        });
+                        break;
+                    case 'dayPeriod':
+                        reservations.forEach((ele) => {
+                            let tempStart = new Date(ele.period.startDate).getTime();
+                            let tempPeriod = ele.period.dayPeriod; // Define tempPeriod here
+                            if (startDate==tempStart) {
+                                if (tempPeriod == 'كامل اليوم') conflicted = true;
+                                if (tempPeriod == dayPeriod) conflicted = true;
+                                console.log(conflicted);
+                            }
+                        });
+                        break;
                 }
-            });
-            
-    
-            if (conflicted) return res.status(400).send({ error: 'يوجد حجز في هذه الفترة' });
+            if (conflicted) return res.status(403).send({ error: 'يوجد حجز في هذه الفترة' });
             nxt();
         } catch (error) {
             console.log(error.message);

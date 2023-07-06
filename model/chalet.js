@@ -11,7 +11,11 @@ const chaletSchema=new Schema({
     kitchen:{type:Number,trim:true,required:true},
     bath:{type:Number,trim:true,required:true},
     rate:{type:Array,default:[]},
-    price:{type:Number,trim:true,required:true},
+    price:{
+       morning: {type:Number,trim:true,required:true},
+       night: {type:Number,trim:true,required:true},
+       wholeDay: {type:Number,trim:true,required:true},
+    },
     details:{type:String,trim:true}
 })
 const Chalet=mongoose.model('chalet',chaletSchema)

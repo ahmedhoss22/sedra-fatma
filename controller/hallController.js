@@ -5,11 +5,12 @@ const hall={
     postHall:async(req,res)=>{
         try {
             let images=req.imgNames
-            console.log(req.body);
-            let {name,rooms,halls,capacity,price,details}=req.body
-            let {errors,isValid}=hallValidation(name,rooms,halls,capacity,price)
+            let {name,rooms,halls,capacity,nightPrice,morningPrice,wholeDayPrice,details}=req.body
+            let {errors,isValid}=hallValidation(name,rooms,halls,capacity)
+
             if(!isValid) return res.status(403).send({errors})
-            const hall=new Hall({name,images,rooms,halls,capacity,price,details})
+            
+            const hall=new Hall({name,images,rooms,halls,capacity,"price.night":nightPrice,"price.morning":morningPrice,"price.wholeDay":wholeDayPrice,details})
             await hall.save()
             .then(()=> res.sendStatus(201))
             .catch((error)=>{

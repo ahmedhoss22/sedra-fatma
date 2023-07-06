@@ -11,7 +11,6 @@ const customer={
            return await customer.save()
             .then(()=>res.sendStatus(201))
             .catch((error)=>{
-                
                 if (error.code==11000) return res.status(403).send({email:"Email is already taken"})
                return res.status(400).send({error:error.message})
             })

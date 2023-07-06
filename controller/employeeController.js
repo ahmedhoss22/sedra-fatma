@@ -21,14 +21,16 @@ const employee={
     },
     addEmployee:async(req,res)=>{
           try {
-            console.log("AASDasdasd");
-            let {name,nationalId,phone,email,password}=req.body
+            let {name,nationalId,phone,email,password,salary}=req.body
             let {errors,isValid}= employeeValidation(name,email,password,nationalId,phone)
+            console.log(errors);
             if(!isValid) return res.status(403).send(errors)
-            let user =new Employee({name,email,password,nationalId,phone})
+            let user =new Employee({name,email,password,nationalId,phone,salary})
             await user.save()
             .then(()=>res.sendStatus(201))
             .catch((err)=>{
+                console.log(err);
+                console.log(err.code);
                if(err.code==11000) return res.status(403).send({email:"Email is already taken"})
                return res.status(403).send(err.message)
             })

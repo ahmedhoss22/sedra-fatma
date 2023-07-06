@@ -6,8 +6,11 @@ const resortSchema=new Schema({
     images:{type:Array,required:true},
     pool:{type:Number,trim:true,required:true},
     games:{type:Number,trim:true,required:true},
-    price:{type:Number,trim:true,required:true},
-    kitchen:{type:Number,trim:true,required:true},
+    price:{
+        morning: {type:Number,trim:true,required:true},
+        night: {type:Number,trim:true,required:true},
+        wholeDay: {type:Number,trim:true,required:true},
+     },    kitchen:{type:Number,trim:true,required:true},
     area:{type:Number,trim:true,required:true},
     details:{type:String,trim:true},
     rate:{type:Array,default:[]},

@@ -30,6 +30,8 @@ router.patch('/admin/reservation/complete',reservation.completeReservation)
 router.post('/user/reservation/rate',reservation.postEntityRate,reservation.rateReservation)
 router.get('/user/reservation/rate',reservation.getRates)
 
+router.post("/admin/addReservation",validReservation.checkPeriod,reservation.addReservation)
+
 router.route("/admin/notification")
 .get(reservation.getNotification)
 .patch(reservation.deleteNotifiaction)

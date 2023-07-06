@@ -7,5 +7,7 @@ const deleteFile=require("../middlewares/deleteFile")
 router.route('/resort')
 .post(resortFileUpload,resort.postResort)
 .get(resort.getResort)
+
 router.delete('/resort/delete/:id',deleteFile.resort,resort.deleteResort)
+
 module.exports = router;

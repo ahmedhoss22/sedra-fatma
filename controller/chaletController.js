@@ -5,10 +5,10 @@ const chalet={
     postChalet:async(req,res)=>{
         try {
             let images=req.imgNames
-            let {name,area,address,bath,lounge,price,sleeping,kitchen,details}=req.body
-            let {errors,isValid}=chaletValidation(name,area,address,bath,lounge,price,sleeping,images,kitchen)
+            let {name,area,address,bath,lounge,nightPrice,morningPrice,wholeDayPrice,sleeping,kitchen,details}=req.body
+            let {errors,isValid}=chaletValidation(name,area,address,bath,lounge,sleeping,images,kitchen)
             if(!isValid) return res.status(403).send({errors})
-            const chalet=new Chalet({name,images,details,area,address,sleeping,lounge,kitchen,bath,price,})
+            const chalet=new Chalet({name,images,details,area,address,sleeping,lounge,kitchen,bath,"price.morning":morningPrice,"price.night":nightPrice,"price.wholeDay":wholeDayPrice})
             await chalet.save()
             .catch((error)=>{
                 console.log(error.message);
@@ -23,7 +23,6 @@ const chalet={
     getChalet:async(req,res)=>{
         try {
             let chalets=await Chalet.find()
-          
             res.send(chalets)
         } catch (error) {
             console.log(error.message);

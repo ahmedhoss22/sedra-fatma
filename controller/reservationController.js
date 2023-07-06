@@ -7,9 +7,13 @@ const Resort =require("../model/resort")
 const Chalet =require("../model/chalet")
 const Rating=require('../model/rating')
 const Notification=require("../model/notification")
+const loggerEvent= require("../services/logger")
+const logger= loggerEvent("reservations")
+
 const reservation={
     postUserUnconfirmedReservation:async (req,res,nxt)=>{
         try {
+            logger.info(req.body)
             let {image,type,clientId,clientName,startDate,endDate,periodType,dayPeriod,cost,entityId,entityName,phone}=req.body
             let check=await Reservation.find({ "client.id": clientId,"client.name":clientName, status: 'unConfirmed' ,'entity.id':entityId})
             if(check.length!=0) return res.status(403).send("You have reserved this entity")
@@ -35,7 +39,7 @@ const reservation={
                 res.status(400).send({error:e.message})
             })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send(error.message)
         }
     },
@@ -45,7 +49,7 @@ const reservation={
             const reservations = await Reservation.find({ "client.id": id, status: 'unConfirmed' });
             res.send(reservations);
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send(error.message);
         }
     },
@@ -54,16 +58,19 @@ const reservation={
             let reservations=await Reservation.find({})
             res.send(reservations)
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send({eror:error.message})
         }
     },
     updateAdminReservation:async (req,res)=>{
         try {
-            let {clientName,startDate,endDate,cost,entityId,dayPeriod,_id,entityName}=req.body
+            logger.info(req.body)
+            let {clientName,startDate,endDate,cost,entityId,dayPeriod,_id,entityName,phone,clientId}=req.body
            await Reservation.findByIdAndUpdate(_id,
                 {
                     "client.name":clientName,
+                    "client.phone":phone,
+                    "client.id":clientId,
                     "entity.name":entityName,
                     "entity.id":entityId,
                     "cost":cost,
@@ -73,11 +80,11 @@ const reservation={
                 })
                 .then(()=>res.send("done"))
                 .catch((error)=>{
-                    console.log(error.message);
+                    logger.error(error.message)
                     res.status(500).send({error:error.message})
                 })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send({error:error.message})
         }
     },
@@ -87,33 +94,36 @@ const reservation={
             await Reservation.findByIdAndUpdate(id,{status:"canceled",cancelRequest:false})
             .then(()=>res.send())
             .catch((error)=>{
-                console.log(error.message);
+                logger.error(error.message)
                 res.status(500).send({error:error.message})
             })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send({error:error.message})
         }
     },
     confirmOrder:async(req,res,nxt)=>{
         try {
+            logger.info(req.body)
             let {_id}=req.body
-            await Reservation.findByIdAndUpdate(_id,{status:"confirmed"})
+            const reservations = await Reservation.find({status:"confirmed"})
+            await Reservation.findByIdAndUpdate(_id,{status:"confirmed",contractNumber:reservations.length+1})
             .then(()=>{
                 req.type="confirmed"
                 nxt()
             })
             .catch((error)=>{
-                console.log(error.message);
+                logger.error(error.message)
                 res.status(500).send({error:error.message})
             })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send(error.message)
         }
     },
     postConfirmedReservations:async(req,res,nxt)=>{
         try {
+            logger.info(req.body)
             let {clientName,phone,entityId,entityName,startDate,endDate,cost,dayPeriod,tax,paid,contractNumber}=req.body
             let newOne= new Reservation({
                 client:{name:clientName,phone},
@@ -132,7 +142,7 @@ const reservation={
             })
             .catch((err)=>{throw new Error(err.message)})
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(400).send({error:error.message})
         }
     },
@@ -141,7 +151,7 @@ const reservation={
             let reservations= await Reservation.find({status:"confirmed"})
             res.send(reservations)
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(400).send({error:error.message})
         }
     },
@@ -158,7 +168,7 @@ const reservation={
             }).then(()=>res.send())
             .catch((err)=>{throw new Error(err.message)})
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(400).send({error:error.message})
         }
     },
@@ -202,19 +212,17 @@ const reservation={
     },
     deferreReservation:async(req,res)=>{
         try {
-            let {_id,startDate,endDate,dayPeriod}=req.body
+            let {_id}=req.body
             await Reservation.findByIdAndUpdate(_id,{
-                'period.startDate':startDate,
-                'period.endDate':endDate,
-                'period.dayPeriod':dayPeriod,
+                period:req.body?.period,
                 deferred:true
             }).then(()=>res.send())
             .catch((error)=>{
-                console.log(error.message);
+                logger.error(error.message)
                 res.status(400).send({error:error.message})
             })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(400).send({error:error.message})
         }
     },
@@ -223,11 +231,11 @@ const reservation={
             await Reservation.findByIdAndUpdate(req.body._id,{completed:true})
             .then(()=>res.send())
             .catch((error)=>{
-                console.log(error.message);
+                logger.error(error.message)
                 res.status(400).send({error:error.message})
             })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send({error:error.message})
         }
     },
@@ -245,11 +253,11 @@ const reservation={
             await rate.save()
             .then(()=>res.send())
             .catch((error)=>{
-                console.log(error.message);
+                logger.error(error.message)
                 res.status(400).send({error:error.message})
             })
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send({error:error.message})
         }
     },
@@ -276,7 +284,7 @@ const reservation={
           await entity.save()
           next()
         } catch (error) {
-          console.log(error.message);
+          logger.error(error.message)
           res.status(500).send({ error: error.message });
         }
       },
@@ -285,7 +293,7 @@ const reservation={
             let rates= await Rating.find({})
             res.send(rates)
         } catch (error) {
-            console.log(error.message);
+            logger.error(error.message)
             res.status(500).send({error:error.message})
         }
     },
@@ -304,7 +312,7 @@ const reservation={
             let data = await Notification.find({})
             res.send(data)
         } catch (error) {
-            console.log(error);
+            logger.error(error.message)
             res.status(400).send({error:error.message})
         }
     },
@@ -313,7 +321,21 @@ const reservation={
             await Notification.findOneAndDelete({type:req.body.type})
             .then(()=>res.send())
         } catch (error) {
-            console.log(error);
+            logger.error(error.message)
+            res.status(400).send({error:error.message})
+        }
+    },
+    addReservation:async(req,res)=>{
+        try {   
+            let newReservation = new Reservation({...req.body,date:dateToday()})
+            await newReservation.save()
+            .then(()=>res.send())
+            .catch((error)=>{
+                logger.error(error.message)
+                res.status(400).send({error:error.message})
+            })
+        } catch (error) {
+            logger.error(error.message)
             res.status(400).send({error:error.message})
         }
     }

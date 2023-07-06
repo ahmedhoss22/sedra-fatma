@@ -8,6 +8,7 @@ const bcrypt=require('bcrypt')
     password: { type: String, required: true },
     nationalId: { type: Number, required: true ,unique:true},
     phone: { type: Number, required: true },
+    salary: { type: Number, required: true },
     permissions: { type: Object,default:{
       expenses: false,
       insurance: false,

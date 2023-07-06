@@ -3,7 +3,7 @@ const User = require("../model/user")
 
 const middlware={
     generateToken:(id)=>{
-        return jwt.sign(id,process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3d',})
+        return jwt.sign(id,process.env.ACCESS_TOKEN_SECRET,{expiresIn: '3d'})
     },
     authorization:async(req,res,nxt)=>{
         const authorization =req.headers['authorization']
@@ -15,7 +15,7 @@ const middlware={
             nxt()
         }catch(err){
             console.log(err.message);
-            res.status(401).send("Not authorized user")
+            res.status(401).send("Not authorized user");
         }
     },
 }

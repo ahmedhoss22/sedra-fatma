@@ -4,7 +4,7 @@ const Schema=mongoose.Schema
 const reservationSchema=new Schema({
     client:{
         name:{type:String,trim:true,required:true},
-        id:{type:Schema.Types.ObjectId,ref:"users",trim:true},
+        id:{type:Schema.Types.ObjectId,ref:"users",trim:true, required:true},
         phone:{type:Number,required:true}
     },
     entity:{
@@ -21,8 +21,8 @@ const reservationSchema=new Schema({
         type:{type:String,required:true,trim:true},
     }],
     period:{
-        type:{type:String,trim:true}, // days or one day
-        startDate:{type:String,trim:true}, 
+        type:{type:String,trim:true,required:true}, // days or dayPeriod
+        startDate:{type:String,trim:true,required:true}, 
         endDate:{type:String,trim:true},
         dayPeriod:{type:String,trim:true}           //morning - night -whole day
     },
