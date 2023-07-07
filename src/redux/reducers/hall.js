@@ -13,6 +13,7 @@ export const fetchHalls= createAsyncThunk(
     }
 }
 );
+
   const hall = createSlice({
     name: "hall",
     initialState: {

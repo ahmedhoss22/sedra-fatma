@@ -35,16 +35,20 @@ function ReservationHall({data:data2}) {
   const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(true)
   const refOne = useRef(null)
-  const [data,setData]=useState({startDate:new Date(),endDate:new Date(),periodType:'dayPeriod',dayPeriod:'صباحية',cost:data2? data2.price : 0,type:'hall'})
+  const [data,setData]=useState({startDate:new Date(),endDate:new Date(),periodType:'dayPeriod',dayPeriod:'صباحية',cost:data2? data2?.price?.morning : 0,type:'hall'})
   const [loading,setLoading]=useState(false)
   const [snackOpen,setSnackOpen]=useState(false)
   const [snackOpen2,setSnackOpen2]=useState(false)
   const naviagte=useNavigate()
+  const [prices,setPrices]=useState()
   const [dialogeMsg,setDialogeMsg]=useState(false)
   const login=useSelector((state)=>state.user.value.logedin)
   const user=useSelector((state)=>state.user.value.data)
   const handelClose=()=>setDialogeMsg(false)
   const handleButtonClick = (index) =>setData({...data,dayPeriod:index});
+  useEffect(()=>{
+    setPrices(data2?.price)
+  },[data2])
   const buttonGroup = [
     { label: 'صباحية', value: 'صباحية',enLabel:"Morning" },
     { label: 'مسائية', value: 'مسائية',enLabel:"Night" },
@@ -87,14 +91,19 @@ function ReservationHall({data:data2}) {
         },1000)
       })
     }
+    const DayPeriodPrice=(period)=>{
+      if(period == 'صباحية') setData({...data,dayPeriod:period,cost:prices.morning})
+      if(period == 'مسائية') setData({...data,dayPeriod:period,cost:prices.night})
+      if(period == 'كامل اليوم') setData({...data,dayPeriod:period,cost:prices.wholeDay})
+    }
   return (
     <>{
       data2 &&
       <>
     <form className="reservation" onSubmit={handleSubmit} >
       <div className="left-side">
-        {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2.price}</span> {t("details.price")}</h3>
-        :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2.price}</span></h3>}
+        {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2.price?.wholeDay}</span> {t("details.price")}</h3>
+        :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2.price?.wholeDay}</span></h3>}
         <div className="box">
           <div className="leave" style={{borderRight:"none"}}>
             <p>{t("details.arrive")}</p>
@@ -136,7 +145,7 @@ function ReservationHall({data:data2}) {
             <Button
               key={index}
               className={data.dayPeriod === button.label ? 'active btns' : 'btns'}
-              onClick={() => handleButtonClick(button.label)}
+              onClick={() => DayPeriodPrice(button.label)}
             >
               {i18n.language=='ar'&& button.label}
               {i18n.language=='en'&& button.enLabel}

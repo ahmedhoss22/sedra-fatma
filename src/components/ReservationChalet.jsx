@@ -37,32 +37,39 @@ function ReservationChalet({data:data2}) {
   let reservations=useSelector((state)=>state.user.value.reservations)
   const login=useSelector((state)=>state.user.value.logedin)
   const user=useSelector((state)=>state.user.value.data)
-  const [data,setData]=useState({type:"chalet", startDate:new Date(),endDate:new Date(),periodType:'days',dayPeriod:'صباحية',cost:data2? data2.price : 0})
+  const [data,setData]=useState({type:"chalet", startDate:new Date(),endDate:new Date(),periodType:'days',dayPeriod:'كامل اليوم',cost:data2? data2?.price?.wholeDay : 0})
   const [open, setOpen] = useState(true)
   const refOne = useRef(null)
   const [loading,setLoading]=useState(false)
+  const [prices,setPrices]=useState({wholeDay:"",morning:"",night:""})
   const navigate=useNavigate()
   const [snackOpen,setSnackOpen]=useState(false)
   const [snackOpen2,setSnackOpen2]=useState(false)
   const [period,setPeriod]=useState(0)
   const [dialogeMsg,setDialogeMsg]=useState(false)
   const handelClose=()=>setDialogeMsg(false)
-  const handleButtonClick = (index) =>setData({...data,dayPeriod:index});
+  const handleButtonClick = (index) =>
+
+     setData({...data,dayPeriod:index}
+    );
   const [range, setRange] = useState([{
       startDate:data.startDate,
       endDate:data.endDate,
       key: 'selection'
     }]
   )
+  useEffect(()=>{
+    setPrices(data2?.price)
+  },[data2])
   function handleSelect(date){
     setRange([date])
     const numDays = differenceInDays(date.endDate, date.startDate); 
-    const pricePerDay = data2.price; 
+    const pricePerDay = data2?.price?.wholeDay; 
     const total = numDays * pricePerDay; 
     setData({...data,startDate: date.startDate,endDate:date.endDate,cost: total+ pricePerDay})
   }
   function handleSelectCalender(e){
-    setData({...data,startDate:e,endDate:e,cost:data2.price})
+    setData({...data,startDate:e,endDate:e,cost:data2.price?.wholeDay})
   }
   const buttonGroup = [
     { label: 'صباحية', value: 'صباحية',enLabel:"Morning" },
@@ -116,15 +123,28 @@ function ReservationChalet({data:data2}) {
         },1000)
       })
     }
-
-  return (
+const DayPeriodPrice=(period)=>{
+  if(period == 'صباحية') setData({...data,dayPeriod:period,cost:prices.morning})
+  if(period == 'مسائية') setData({...data,dayPeriod:period,cost:prices.night})
+  if(period == 'كامل اليوم') setData({...data,dayPeriod:period,cost:prices.wholeDay})
+}
+const handleChange= (e)=>{
+  setData({...data,periodType:e.target.value,startDate:new Date(),endDate:new Date(),cost:data2?.price?.wholeDay})
+  setRange([{
+    startDate:new Date(),
+    endDate:new Date(),
+    key: 'selection'
+  }])
+}
+console.log(data);
+return (
     <>{
       data2 &&
       <>
     <form className="reservation" onSubmit={handleSubmit} >
       <div className="left-side">
-      {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2.price}</span> {t("details.price")}</h3>
-        :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2.price}</span></h3>}
+      {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2?.price?.wholeDay}</span> {t("details.price")}</h3>
+        :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2.price?.wholeDay}</span></h3>}
         <div className="box">
           <div className="arrive">
           <p>{t("details.arrive")}</p>
@@ -160,12 +180,11 @@ function ReservationChalet({data:data2}) {
           </Grid> 
         </Grid> 
     </div>
- 
     {open &&      
     <div className="calendar">
      <div ref={refOne} className='calendar-box'>
       <div>
-        <RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="days" name="radio-buttons-group" onChange={(e)=>setData({...data,periodType:e.target.value})}>
+        <RadioGroup row aria-labelledby="demo-radio-buttons-group-label" defaultValue="days" name="radio-buttons-group" onChange={handleChange}>
           <FormControlLabel value="dayPeriod"  control={<Radio />} label={t("details.periodOfDay")} />
           <FormControlLabel value="days" control={<Radio />} label={t("details.days")} />
         </RadioGroup>
@@ -179,7 +198,7 @@ function ReservationChalet({data:data2}) {
         <h3 >{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button,index) => (
-            <Button key={index} className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => handleButtonClick(button.label)}>
+            <Button key={index} className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
               {i18n.language=='en'? button.enLabel:button.label}
             </Button>
           ))}

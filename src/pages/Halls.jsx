@@ -72,7 +72,7 @@ const Halls = () => {
                 </Typography>
                 <Typography variant="body2" color="text.secondary" style={{display:"flex",justifyContent:"space-between"}}>
                     <div className="price-box">
-                          <p style={{fontSize:i18n.language=='en'?"1.1rem":"1.3rem"}}><span className='price'>{t("cards.sar")}   {ele.price}</span> / {t("cards.day")}</p>
+                          <p style={{fontSize:i18n.language=='en'?"1.1rem":"1.3rem"}}><span className='price'>{t("cards.sar")}   {ele.price?.wholeDay}</span> / {t("cards.day")}</p>
                     </div>
                     <div className="data">
                       <p>{t("cards.hallsNumber")} {ele.halls}<LocationOnIcon className='icon'/></p>
