@@ -127,7 +127,7 @@ function ReservationCalendar({data:data2}) {
       if(period == 'كامل اليوم') setData({...data,dayPeriod:period,cost:prices.wholeDay})
     }
     const handleChange= (e)=>{
-      setData({...data,periodType:e.target.value,startDate:new Date(),endDate:new Date(),cost:data2?.price?.wholeDay})
+      setData({...data,periodType:e.target.value,startDate:new Date(),endDate:new Date(),cost:data2?.price?.wholeDay,dayPeriod:"كامل اليوم"})
       setRange([{
         startDate:new Date(),
         endDate:new Date(),
@@ -141,8 +141,8 @@ function ReservationCalendar({data:data2}) {
       <>
     <form className="reservation" onSubmit={handleSubmit} >
       <div className="left-side">
-      {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2.price?.wholeDay}</span> {t("details.price")}</h3>
-        :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2.price?.wholeDay}</span></h3>}
+      {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2?.price?.wholeDay}</span> {t("details.price")}</h3>
+        :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2?.price?.wholeDay}</span></h3>}
         <div className="box">
           <div className="arrive">
           <p>{t("details.arrive")}</p>

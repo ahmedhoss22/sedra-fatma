@@ -40,6 +40,7 @@ const ChaletCard = () => {
   },[])
   let chalets= useSelector((state)=>state.chalet.value.data)
   let data = chalets.find((ele)=>ele._id==id)
+  console.log(data);
   const handleDragStart = (e) => e.preventDefault();
   const [displayImg,setDisplayImg]=useState()
   useEffect(()=>{data&& setDisplayImg(data.images[0])},[data])
@@ -86,16 +87,16 @@ const ChaletCard = () => {
                         <p> {t("details.lounge")} {data.lounge}<img src={living} alt="" /> </p>
                         <p> {t("details.bath")} {data.bath}<img src={bath} alt="" /> </p>
                     </div>
-                  {data.details&& 
+                  {/* {data?.details&& 
                    <>
                     <p className='subtitle'>{t("details.chaletDetails")}</p>
                    <ul className="box2" >
-                        {data.details.map((ele)=>(
+                        {data?.details?.map((ele)=>(
                           <li>{ele}</li>
                           ))}
                     </ul>
                       </>
-                    }
+                    } */}
                 </div>
             </Container>
             <Phone/>
