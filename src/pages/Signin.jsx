@@ -51,6 +51,7 @@ const Signin = () => {
             value={data.email}
             onChange={(e)=>setData({...data,email:e.target.value})}
             error={email}
+            style={{margin:"10px 0"}}
             helperText={email}
             variant='outlined'
             type='email'
@@ -65,14 +66,15 @@ const Signin = () => {
             value={data.password}
             onChange={(e)=>setData({...data,password:e.target.value})}
             placeholder='كلمة السر'
+            style={{margin:"10px 0"}}
             variant='outlined'
             type='password'
             error={password}
             helperText={password}
           />
           <div className="btns">
-            <Button variant='contained' type='submit' className='btn'>استمرار</Button>
-            <Button variant='contained' className='btn' onClick={()=>navigate('/user/signup')}>عمل حساب جديد</Button>
+            <button  type='submit' className='btn'>استمرار</button>
+            <button  className='btn' onClick={()=>navigate('/user/signup')}>عمل حساب جديد</button>
           </div>
         </form>
         <div className="buble1"></div>

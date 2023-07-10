@@ -18,6 +18,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import "../scss/calender.scss"
+import "../scss/chaletCard.scss"
 import Dialoge from './Dialoge'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -44,7 +45,10 @@ function ReservationHall({data:data2}) {
   const [dialogeMsg,setDialogeMsg]=useState(false)
   const login=useSelector((state)=>state.user.value.logedin)
   const user=useSelector((state)=>state.user.value.data)
-  const handelClose=()=>setDialogeMsg(false)
+  const handelClose=()=>{
+    setDialogeMsg(false)
+    setLoading(false)
+  }
   const handleButtonClick = (index) =>setData({...data,dayPeriod:index});
   useEffect(()=>{
     setPrices(data2?.price)
@@ -116,19 +120,19 @@ function ReservationHall({data:data2}) {
         {i18n.language=='ar' &&<> <p >{t("details.total")}</p><span>{data.cost}</span></>}
          {i18n.language=='en' &&<><span>{data.cost}</span> <p >{t("details.total")}</p></>}
         </div>
-      <Button variant='contained' type='submit' className='choose'>{t("details.choose")}</Button>
+      <button variant='contained' type='submit' className='choose'>{t("details.choose")}</button>
       <p className='subtitle'>{t("details.pill")}</p>
         <Grid container spacing={2} width={'80%'} margin='auto'>
           <Grid item xs={4} className='spinner'>
-              <CircularProgressWithLabel variant="determinate" value={100} label={3} />
+              <CircularProgressWithLabel style={{color:"var(--primary)"}} variant="determinate" value={100} label={3} />
               <p className='price'>{Math.floor(data.cost/3)}</p>
           </Grid> 
           <Grid item xs={4} className='spinner'>
-             <CircularProgressWithLabel  variant="determinate" value={66} label={2} />
+             <CircularProgressWithLabel style={{color:"var(--primary)"}}  variant="determinate" value={66} label={2} />
              <p className='price'>{Math.floor(data.cost/3)}</p>
           </Grid> 
           <Grid item xs={4} className='spinner'>
-             <CircularProgressWithLabel  variant="determinate" value={33} label={1} />
+             <CircularProgressWithLabel style={{color:"var(--primary)"}}  variant="determinate" value={33} label={1} />
              <p className='price'>{Math.floor(data.cost/3)}</p>
           </Grid> 
         </Grid> 
@@ -142,14 +146,14 @@ function ReservationHall({data:data2}) {
         <h3>{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button, index) => (
-            <Button
+            <button
               key={index}
               className={data.dayPeriod === button.label ? 'active btns' : 'btns'}
               onClick={() => DayPeriodPrice(button.label)}
             >
               {i18n.language=='ar'&& button.label}
               {i18n.language=='en'&& button.enLabel}
-            </Button>
+            </button>
           ))}
         </div>
         </div>

@@ -69,7 +69,7 @@ function handleSubmit(e){
                   <TextField variant="outlined" inputProps={{ min: 0 }} value={data.lounges}  fullWidth  type="number" placeholder={t("search.lounges")} onChange={(e)=>setData({...data,lounges:e.target.value})}/>
               </Grid>
               <Grid item xs={12}>
-                  <Button variant='contained' type='submit'>{t("search.search")}</Button>
+                  <button className='search-modal-btn' variant='contained' type='submit'>{t("search.search")}</button>
               </Grid>
           </Grid>
         </form>

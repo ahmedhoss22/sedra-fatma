@@ -15,6 +15,7 @@ import paypal from "../assets/paypal.webp"
 import Footer from './Footer';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import "../scss/chaletCard.scss"
 import Typography from '@mui/material/Typography';
 import "../scss/calender.scss"
 import Api from '../config/config';
@@ -164,17 +165,17 @@ return (
       <p className='subtitle' style={{textAlign:"center"}}>{t("details.pill")}</p>
         <Grid container spacing={2} width={'80%'} margin='auto'>
           <Grid item xs={4} className='spinner'>
-              <CircularProgressWithLabel variant="determinate" value={100} label={3} />
+              <CircularProgressWithLabel  style={{color:"var(--primary)"}}  variant="determinate" value={100} label={3} />
               {/* <p className='date'>date</p> */}
               <p className='price'>{Math.round(data.cost/3)}</p>
           </Grid> 
           <Grid item xs={4} className='spinner'>
-             <CircularProgressWithLabel  variant="determinate" value={66} label={2} />
+             <CircularProgressWithLabel style={{color:"var(--primary)"}} variant="determinate" value={66} label={2} />
              {/* <p className='date'>date</p> */}
              <p className='price'>{Math.round(data.cost/3)}</p>
           </Grid> 
           <Grid item xs={4} className='spinner'>
-             <CircularProgressWithLabel  variant="determinate" value={33} label={1} />
+             <CircularProgressWithLabel style={{color:"var(--primary)"}}  variant="determinate" value={33} label={1} />
              {/* <p className='date'>date</p> */}
              <p className='price'>{Math.round(data.cost/3)}</p>
           </Grid> 
@@ -198,9 +199,9 @@ return (
         <h3 >{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button,index) => (
-            <Button key={index} className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
+            <button key={index} className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
               {i18n.language=='en'? button.enLabel:button.label}
-            </Button>
+            </button>
           ))}
         </div>
         </div>}

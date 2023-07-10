@@ -32,7 +32,7 @@ const Home = () => {
         <div className="circle3"></div>
     </div>    
         <div className='searchBox'>
-            <Button variant='outlined' onClick={()=>setOpen(true)} style={{direction:i18n.language=='en'?'ltr':"rtl"}}>  {t("main.search")}  <SearchIcon/></Button>
+            <button variant='outlined' onClick={()=>setOpen(true)} style={{direction:i18n.language=='en'?'ltr':"rtl"}}>  {t("main.search")}  <SearchIcon/></button>
         </div>
         <div className="tabs">
         <SearchContext.Provider value={search}>

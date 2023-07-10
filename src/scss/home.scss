@@ -123,7 +123,21 @@
     display: flex;
     justify-content: center;
     height: 50px;
-
+    button{
+        border-color: var(--primary);
+        background-color: #fff;
+        color: var(--primary);
+        border-radius: 6px;
+        font-weight: 600 ;
+        transition: .4s;
+        outline: unset;
+        &:hover{
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    }
+    svg{
+        font-family: 700;
+    }
 }
 .tabs{
     width: 80%;
@@ -250,4 +264,14 @@
   }
   .nav-link{
     padding: 0 !important;
+  }
+  .search-modal-btn{
+    display: block;
+    margin:15px auto 0;
+    background-color: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 6px 20px;
+    border-radius: 6px;
+    font-weight: 700;
   }
