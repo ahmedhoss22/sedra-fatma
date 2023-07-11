@@ -153,7 +153,6 @@ function ReservationCalendar({data:data2}) {
             <p>{t("details.left")}</p>
             {data.periodType=='days'? <p>{`${format(data.endDate,'dd/MM/yyyy') }`}</p>:<p>{`${format(data.startDate,'MM/dd/yyyy') }`}</p>}
           </div>
-          
         </div>
         <div className="total">
         {i18n.language=='ar' &&<> <p >{t("details.total")}</p><span>{data.cost}</span></>}
@@ -198,7 +197,7 @@ function ReservationCalendar({data:data2}) {
         <h3 >{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button,index) => (
-            <button key={index} className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
+            <button key={index} type='button' className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
               {i18n.language=='en'? button.enLabel:button.label}
             </button>
           ))}

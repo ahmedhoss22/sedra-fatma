@@ -75,6 +75,7 @@ function ReservationHall({data:data2}) {
     );
   }
   function handleSubmit(e){
+    console.log("fired");
     e.preventDefault()
     setLoading(true)
     if(!login) return setDialogeMsg(true)
@@ -147,6 +148,7 @@ function ReservationHall({data:data2}) {
         <div className="btns-box">
           {buttonGroup.map((button, index) => (
             <button
+            type='button'
               key={index}
               className={data.dayPeriod === button.label ? 'active btns' : 'btns'}
               onClick={() => DayPeriodPrice(button.label)}

@@ -199,7 +199,7 @@ return (
         <h3 >{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button,index) => (
-            <button key={index} className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
+            <button key={index} type='button' className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
               {i18n.language=='en'? button.enLabel:button.label}
             </button>
           ))}
