@@ -121,7 +121,7 @@ export default function Sidebar({isOpen,toggle}) {
     {title:"اضافة جهة",enTitle:"Add Entity",icon :<DomainAddIcon/>,type:2 ,
     subtitle:[
       {title:" قاعات" ,enTitle:"Add Hall",path:"/addHall"},
-      {title:" منتحعات" ,enTitle:"Add Resort",path:"/addRessort"},
+      {title:" منتجعات" ,enTitle:"Add Resort",path:"/addRessort"},
       {title:" شاليهات" ,enTitle:"Add Chalet",path:"/addChalet"},
     ]},
   {title:"خروج" ,enTitle:"Exit",icon :<LogoutIcon /> ,path:"/signin",type:1},
