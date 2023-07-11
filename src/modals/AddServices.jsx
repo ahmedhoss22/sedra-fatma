@@ -30,7 +30,6 @@ function AddServices({handleClose,handleOpen,open,data:temp,update}) {
   if(temp)setData({...temp})
   dispatch(fetchServices())
 },[temp])
-console.log(update);
 function handleSubmit(e){
   e.preventDefault();
   let url = update? '/admin/services/update':'/admin/services';

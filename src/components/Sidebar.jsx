@@ -91,18 +91,18 @@ export default function Sidebar({isOpen,toggle}) {
     {title:"البحث السريع" ,enTitle:"Search",icon :<ManageSearchIcon /> ,path:"/search",type:1},
     {title:"الحجوزات",enTitle:"Reservations",icon :<LibraryBooksIcon/>,type:2, notification: notificationData.includes("unconfirmed") ||  notificationData.includes("confirmed"),
     subtitle:[
-      {title:"حجوزات غير مؤكدة" , enTitle:"Unconfirmed Reservations",path:"/unConfirmedReservations",notification:notificationData.includes("unconfirmed")},
-        {title:"حجوزات مؤكدة" , enTitle:"Confirmed Reservations",path:"/confirmedReservations",notification:notificationData.includes("confirmed"),},
-        {title:"حجوزات مؤجلة" ,enTitle:"Deferred Reservations", path:"/deferredReservations"},
-        {title:"حجوزات ملغية" , enTitle:"Canceled Reservations",path:"/canceledReservations"},
+      {title:" غير مؤكدة" , enTitle:"Unconfirmed Reservations",path:"/unConfirmedReservations",notification:notificationData.includes("unconfirmed")},
+        {title:" مؤكدة" , enTitle:"Confirmed Reservations",path:"/confirmedReservations",notification:notificationData.includes("confirmed"),},
+        {title:" مؤجلة" ,enTitle:"Deferred Reservations", path:"/deferredReservations"},
+        {title:" ملغية" , enTitle:"Canceled Reservations",path:"/canceledReservations"},
         {title:"طلبات الغاء الحجز" ,enTitle:"Cancel Requests", path:"/cancelRequest"},
       ]
     },
     {title:"التأمينات",enTitle:"Insurance",icon :<PointOfSaleIcon/>,type:2,
     subtitle:[
-      {title:"تأمينات القاعات" ,enTitle:"Hall Insurance", path:"/insurances/hall"},
-      {title:"تأمينات الشاليهالت" ,enTitle:"Chalet Insurance", path:"/insurances/chalet"},
-      {title:"تأمينات المنتجعات" ,enTitle:"Resort Insurance", path:"/insurances/resort"},
+      {title:" القاعات" ,enTitle:"Hall Insurance", path:"/insurances/hall"},
+      {title:" الشاليهالت" ,enTitle:"Chalet Insurance", path:"/insurances/chalet"},
+      {title:" المنتجعات" ,enTitle:"Resort Insurance", path:"/insurances/resort"},
     ]
   },
   {title:"االخدمات" ,enTitle:"Services",icon :<ManageAccountsIcon /> ,path:"/services",type:1},
@@ -120,9 +120,9 @@ export default function Sidebar({isOpen,toggle}) {
     {title:"التقارير" ,enTitle:"Reports",icon :<ArticleIcon /> ,path:"/reports",type:1},
     {title:"اضافة جهة",enTitle:"Add Entity",icon :<DomainAddIcon/>,type:2 ,
     subtitle:[
-      {title:"اضافة قاعة" ,enTitle:"Add Hall",path:"/addHall"},
-      {title:"اضافة منتجع" ,enTitle:"Add Resort",path:"/addRessort"},
-      {title:"اضافة شاليه" ,enTitle:"Add Chalet",path:"/addChalet"},
+      {title:" قاعات" ,enTitle:"Add Hall",path:"/addHall"},
+      {title:" منتحعات" ,enTitle:"Add Resort",path:"/addRessort"},
+      {title:" شاليهات" ,enTitle:"Add Chalet",path:"/addChalet"},
     ]},
   {title:"خروج" ,enTitle:"Exit",icon :<LogoutIcon /> ,path:"/signin",type:1},
 ]

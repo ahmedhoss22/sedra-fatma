@@ -24,10 +24,21 @@ export const fetchServices= createAsyncThunk(
       }
   }
   );
+  export const fetchFreeServices= createAsyncThunk(
+    'customer/fetchFreeServices',
+    async (_, thunkAPI) => {
+      try {  
+        const response = await Api.get('/admin/freeServices')
+        return response.data;
+      } catch (error) {
+        return thunkAPI.rejectWithValue(error.message);
+      }
+  }
+  );
   const customer = createSlice({
     name: "services",
     initialState: {
-      value: { packages: [],servies:[] },
+      value: { packages: [],servies:[],freeServices:[]},
     },
     reducers: {
     },
@@ -37,6 +48,9 @@ export const fetchServices= createAsyncThunk(
       });
       builder.addCase(fetchServices.fulfilled, (state, action) => {
         state.value.servies=action.payload
+      });
+      builder.addCase(fetchFreeServices.fulfilled, (state, action) => {
+        state.value.freeServices=action.payload
       });
     },
   });

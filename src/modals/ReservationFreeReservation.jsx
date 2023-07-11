@@ -7,11 +7,11 @@ import "../scss/addChalets.scss"
 import { Grid, InputLabel } from '@mui/material';
 import { TextField } from '@mui/material';
 import Api from './../config/config';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { FormControl, Select, MenuItem } from '@mui/material';
 import { useParams } from 'react-router-dom';
-
+import { fetchFreeServices } from '../redux/reducers/services';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -26,6 +26,7 @@ const style = {
 function ReservationFreeReservation({handleClose,handleOpen,open,tempData:temp,update,fetchData}) {    
   const { t, i18n } = useTranslation();
   const [data,setData]=useState({service:'',number:'',note:'',type:"free"})
+  let freeServicessData=useSelector((state)=>state.services.value.freeServices)
   const {id}=useParams()
  const dispatch=useDispatch()
  useEffect(()=>{if(temp)setData({...temp,confirmPassword:temp.password})
@@ -55,8 +56,11 @@ function handleSubmit(e){
                 <Grid item xs={12}>
                     <InputLabel id="select-label">الخدمة المجانية</InputLabel>
                 <Select labelId="select-label" id="select" required value={data.service} onChange={(e)=>setData({...data,service:e.target.value})} fullWidth>
-                    <MenuItem value="كراسي">كراسي</MenuItem>
-                    <MenuItem value="طاولات">طاولات</MenuItem>
+                    {
+                      freeServicessData.map((ele)=>(
+                        <MenuItem value={ele.service}>{ele.service}</MenuItem>
+                      ))
+                      }
                 </Select>
                 </Grid>
                 <Grid item xs={12}>
