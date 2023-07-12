@@ -8,6 +8,10 @@ const packageSchema=new Schema({
 const serviceSchema=new Schema({
     service:{type:String,trim:true,required:true},
 })
+const freeServiceSchema=new Schema({
+    service:{type:String,trim:true,required:true},
+})
 const Package=mongoose.model('packages',packageSchema)
 const Services=mongoose.model('services',serviceSchema)
-module.exports={Package,Services}
+const FreeServices=mongoose.model('freeServices',freeServiceSchema)
+module.exports={Package,Services,FreeServices}

@@ -1,4 +1,4 @@
-const { Package,Services} =require("../model/services")
+const { Package,Services,FreeServices} =require("../model/services")
 
 const services={
     postPackage:(req,res)=>{
@@ -85,6 +85,51 @@ const services={
         try {
             let {id}=req.params
             await Services.findByIdAndDelete(id)
+            .then(()=>res.send())
+            .catch((err)=>{throw new Error(err.message)})
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send(error.message)
+        }
+    },
+    postFreeService:(req,res)=>{
+        try {
+            let item =new FreeServices(req.body)
+            item.save()
+            .then(()=>res.send())
+            .catch((err)=>{
+                console.log(err.message);
+                res.status(403).send({message:err.message})
+            })
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send(error.message)
+        }
+    },
+    getFreeServices:async(req,res)=>{
+        try {
+            let items=await FreeServices.find({})
+            res.send(items)
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send(error.message)
+        }
+    },
+    updateFreeService:async(req,res)=>{
+        try {
+            let id =req.body._id
+            await FreeServices.findByIdAndUpdate(id,req.body)
+            .then(()=>res.send())
+            .catch(()=>{throw new Error("Error while updating Free Services")})
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send(error.message)
+        }
+    },
+    deleteFreeService:async(req,res)=>{
+        try {
+            let {id}=req.params
+            await FreeServices.findByIdAndDelete(id)
             .then(()=>res.send())
             .catch((err)=>{throw new Error(err.message)})
         } catch (error) {

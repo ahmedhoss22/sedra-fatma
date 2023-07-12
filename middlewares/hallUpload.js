@@ -2,6 +2,7 @@ const path = require('path');
 
 const hallFileUpload = (req, res, next) => {
   try {
+    console.log(req.files);
       let file=req.files['file[]']
       if(file.length==0) return res.status(403).send({error:"No files sent"})
       if (!Array.isArray(file))file = [file];

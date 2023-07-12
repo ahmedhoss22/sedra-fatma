@@ -11,33 +11,34 @@ const employeeRouter=require("./routes/employeeRoutes")
 const financeRouter=require('./routes/financeRoutes')
 const customerRouter=require('./routes/customerRoutes')
 const reservationRouter=require('./routes/reservationRoutes')
-const servicesRouter=require("./routes/servicesRoutes")
-const reservationServicesRouter=require("./routes/reservationServicesRoutes")
-const paymentsRouter=require("./routes/paymentRoutes")
-const helmet =require("helmet")
 const upload=require('express-fileupload')
 const cookieParser = require('cookie-parser');
+const helmet =require("helmet")
 dotenv.config()
 const databaseConnection = require('./connection/connect')
 app.use(upload({
     limits:{fileSize:4*1024*1024}
 }))
+
 app.use(cors());
-app.use(helmet());
 app.use(express.json())
 app.use(cookieParser());
 databaseConnection()
 
-app.use('/employee',employeeRouter)
+app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+        'img-src': ["'self'", '*'],
+      },
+    })
+  );app.use('/employee',employeeRouter)
 app.use('/users',userRouter)
 app.use('/admin',chaletRouter)
 app.use('/admin',hallRouter)
 app.use('/admin',resortRouter)
 app.use('/admin',customerRouter)
 app.use('/admin',financeRouter)
-app.use("/admin",servicesRouter)
-app.use("/admin",reservationServicesRouter)
-app.use("/user",paymentsRouter)
 app.use(reservationRouter)
 app.use('/chalet/img',express.static('./uploads/chalet'))
 app.use('/hall/img',express.static('./uploads/hall'))

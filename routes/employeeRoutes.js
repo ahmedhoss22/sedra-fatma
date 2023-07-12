@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const cors = require("cors")
 const employee=require("../controller/employeeController");
 const middlware = require('../middlewares/middleware');
-
+router.use(cors({origin:true}))
 router.post('/signin',employee.signin)
 router.route('/data')
 .post(middlware.authorization,employee.addEmployee)

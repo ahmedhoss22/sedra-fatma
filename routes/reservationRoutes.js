@@ -5,7 +5,7 @@ const validReservation=require("../middlewares/validReservation");
 const middlware = require('../middlewares/middleware');
 
 router.route('/user/reservation')
-.post(reservation.postUserUnconfirmedReservation,reservation.postNotification)
+.post(middlware.authorization,reservation.postUserUnconfirmedReservation,reservation.postNotification)
 router.get('/user/reservations/:id',reservation.getUserReservations)
 router.get('/admin/reservations/all',reservation.getAllReservations)
 

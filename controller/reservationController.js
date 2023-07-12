@@ -15,23 +15,25 @@ const reservation={
         try {
             logger.info(req.body)
             let {image,type,clientId,clientName,startDate,endDate,periodType,dayPeriod,cost,entityId,entityName,phone}=req.body
-            let check=await Reservation.find({ "client.id": clientId,"client.name":clientName, status: 'unConfirmed' ,'entity.id':entityId})
+            let check=await Reservation.find({ "client.id": clientId,"client.name":clientName, status: 'unConfirmed' ,'entity.id':entityId}).exec()
             if(check.length!=0) return res.status(403).send("You have reserved this entity")
             if(startDate) startDate= format(parseISO(startDate) ,'yyyy-MM-dd')
             if(endDate) endDate= format(parseISO(endDate),'yyyy-MM-dd')
             const reserve=new Reservation({
-                client:{name:clientName,id:clientId,phone},
+                client:{name:req.user.name,id:req.user._id,phone:req.user.phone},
                 entity:{name:entityName,id:entityId},
                 cost,
                 type,
                 period:{type:periodType,startDate,endDate,dayPeriod},
                 status:'unConfirmed',
                 date:dateToday(),
-                image
+                image,
+                contractNumber:await Reservation.generateContractID()
             })
-             await reserve.save()
+            await reserve.save()
             .then(()=>{
                 req.type="unconfirmed"
+                console.log("then");
                 nxt()
             })
             .catch((e)=>{
@@ -106,8 +108,7 @@ const reservation={
         try {
             logger.info(req.body)
             let {_id}=req.body
-            const reservations = await Reservation.find({status:"confirmed"})
-            await Reservation.findByIdAndUpdate(_id,{status:"confirmed",contractNumber:reservations.length+1})
+            await Reservation.findByIdAndUpdate(_id,{status:"confirmed"})
             .then(()=>{
                 req.type="confirmed"
                 nxt()
@@ -133,7 +134,8 @@ const reservation={
                 status:"confirmed",
                 contractNumber,
                 date:dateToday(),
-                employee:req.user.name
+                employee:req.user.name,
+                contractNumber:await Reservation.generateContractID()
             })
             await newOne.save()
             .then(()=>{
@@ -181,7 +183,6 @@ const reservation={
             res.status(400).send({error:error.message})
         }
     },
-
     retriveInsurance:async(req,res)=>{
         try {
             let {id}=req.body
@@ -299,9 +300,14 @@ const reservation={
     },
     postNotification:async(req,res)=>{
         try {
+            logger.info(req.type)
             let data=new Notification({type:req.type})
             await data.save()
             .then(()=>res.send())
+            .catch((error)=>{
+                logger.error(error.message)
+                res.status(400).send({error:error.message})
+            })
         } catch (error) {
             console.log(error);
             res.status(400).send({error:error.message})
@@ -327,7 +333,7 @@ const reservation={
     },
     addReservation:async(req,res)=>{
         try {   
-            let newReservation = new Reservation({...req.body,date:dateToday()})
+            let newReservation = new Reservation({...req.body,date:dateToday(),contractNumber:await Reservation.generateContractID()})
             await newReservation.save()
             .then(()=>res.send())
             .catch((error)=>{
@@ -339,7 +345,5 @@ const reservation={
             res.status(400).send({error:error.message})
         }
     }
-      
 }
-
 module.exports =reservation

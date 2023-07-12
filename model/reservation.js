@@ -1,6 +1,5 @@
 const mongoose=require('mongoose')
 const Schema=mongoose.Schema
-
 const reservationSchema=new Schema({
     client:{
         name:{type:String,trim:true,required:true},
@@ -37,5 +36,16 @@ const reservationSchema=new Schema({
     completed:{type:Boolean,default:false},
     employee:{type:String},
 })
-const Reservation=mongoose.model('reservations',reservationSchema)
-module.exports=Reservation
+reservationSchema.statics.generateContractID = async function () {
+    const latestContract = await Reservation.findOne({}, 'contractNumber')
+      .sort({ contractNumber: -1 })
+      .exec();
+  
+    const newContractNumber = latestContract ? latestContract.contractNumber + 1 : 1;
+    this.contractNumber = newContractNumber;
+  
+    return newContractNumber;
+  };
+
+const Reservation = mongoose.model('reservations', reservationSchema);
+module.exports = Reservation;

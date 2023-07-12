@@ -17,4 +17,12 @@ router.route("/services")
 .patch(services.updateService)
 router.delete("/services/:id",services.deleteService)
 router.post("/services/update",services.updateService)
+
+router.route("/freeServices")
+.get(middlware.authorization,services.getFreeServices)
+.post(services.postFreeService)
+.patch(services.updateFreeService)
+router.delete("/freeServices/:id",services.deleteFreeService)
+router.post("/freeServices/update",services.updateFreeService)
+
 module.exports = router;
