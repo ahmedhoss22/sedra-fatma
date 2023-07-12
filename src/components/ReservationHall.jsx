@@ -148,7 +148,7 @@ function ReservationHall({data:data2}) {
         <div className="btns-box">
           {buttonGroup.map((button, index) => (
             <button
-            type='button'
+              type='button'
               key={index}
               className={data.dayPeriod === button.label ? 'active btns' : 'btns'}
               onClick={() => DayPeriodPrice(button.label)}
