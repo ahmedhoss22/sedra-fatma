@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/static/css/main.0364570a.css",
-    "main.js": "/static/js/main.92b9d875.js",
+    "main.js": "/static/js/main.2e1d7f06.js",
     "static/media/halls.png": "/static/media/halls.782eafe8e4a7a1f01124.png",
     "static/media/Logo 1.png": "/static/media/Logo 1.2c1493e140e3f31ece82.png",
     "static/media/paypal.webp": "/static/media/paypal.da3dafbe2e82366a8ee1.webp",
     "index.html": "/index.html",
     "main.0364570a.css.map": "/static/css/main.0364570a.css.map",
-    "main.92b9d875.js.map": "/static/js/main.92b9d875.js.map"
+    "main.2e1d7f06.js.map": "/static/js/main.2e1d7f06.js.map"
   },
   "entrypoints": [
     "static/css/main.0364570a.css",
-    "static/js/main.92b9d875.js"
+    "static/js/main.2e1d7f06.js"
   ]
 }
