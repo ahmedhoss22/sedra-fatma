@@ -135,13 +135,13 @@ function ReservationCalendar({data:data2}) {
         key: 'selection'
       }])
     }
-    console.log(data);
+    console.log(data.startDate);
   return (
     <>{
       data2 &&
       <>
-    <form className="reservation" onSubmit={handleSubmit} >
-      <div className="left-side">
+    <div className="reservation" >
+      <form className="left-side" onSubmit={handleSubmit}>
       {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2?.price?.wholeDay}</span> {t("details.price")}</h3>
         :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2?.price?.wholeDay}</span></h3>}
         <div className="box">
@@ -177,7 +177,7 @@ function ReservationCalendar({data:data2}) {
              <p className='price'>{Math.round(data.cost/3)}</p>
           </Grid> 
         </Grid> 
-    </div>
+    </form>
  
     {open &&      
     <div className="calendar">
@@ -210,7 +210,7 @@ function ReservationCalendar({data:data2}) {
           <FormControlLabel value="paypal" control={<Radio />} label={<img src={paypal} alt='Paypal' width="120px" height="60px"/>} />
         </RadioGroup>
         <Button type='submit' variant='contained'>اتمام الحجز</Button>  */}
-    </form>
+    </div>
     <MapLocation/>
     </>
     }

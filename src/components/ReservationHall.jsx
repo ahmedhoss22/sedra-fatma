@@ -81,7 +81,6 @@ function ReservationHall({data:data2}) {
     if(!login) return setDialogeMsg(true)
       Api.post('/user/reservation',{...data,clientId:user._id,clientName:user.name,phone:user.phone,entityId:data2._id,entityName:data2.name,image:data2.images[0]})
       .then((res)=>{
-       
         setTimeout(()=>{
           setLoading(false)
           setSnackOpen(true)
@@ -101,12 +100,13 @@ function ReservationHall({data:data2}) {
       if(period == 'مسائية') setData({...data,dayPeriod:period,cost:prices.night})
       if(period == 'كامل اليوم') setData({...data,dayPeriod:period,cost:prices.wholeDay})
     }
+    console.log(data.startDate);
   return (
     <>{
       data2 &&
       <>
-    <form className="reservation" onSubmit={handleSubmit} >
-      <div className="left-side">
+    <div className="reservation"  >
+      <form className="left-side" onSubmit={handleSubmit}>
         {i18n.language=='ar'? <h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}> <span>{data2.price?.wholeDay}</span> {t("details.price")}</h3>
         :<h3 style={{direction:i18n.language=='ar'?'ltr':"rtl"}}>{t("details.price")} <span>{data2.price?.wholeDay}</span></h3>}
         <div className="box">
@@ -137,7 +137,7 @@ function ReservationHall({data:data2}) {
              <p className='price'>{Math.floor(data.cost/3)}</p>
           </Grid> 
         </Grid> 
-    </div>
+    </form>
     {open && <div className="calendar">
         <TextField fullWidth  value={`${format(data.startDate,'MM/dd/yyyy') }`} InputProps={{readOnly: true}} className="inputBox" />
      <div ref={refOne} className='calendar-box'>
@@ -167,7 +167,7 @@ function ReservationHall({data:data2}) {
         </RadioGroup>
         <Button type='submit' variant='contained'>اتمام الحجز</Button>  */}
         
-  </form>
+  </div>
         <MapLocation/>
         </>
 
