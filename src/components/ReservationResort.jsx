@@ -5,7 +5,7 @@ import format from 'date-fns/format'
 import { differenceInDays } from 'date-fns'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
-import { Button, Grid, TextField } from '@mui/material';
+import {  Grid, TextField } from '@mui/material';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -27,6 +27,7 @@ import "../scss/chaletCard.scss"
 import { useTranslation } from 'react-i18next';
 import MapLocation from './MapLocation';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -197,9 +198,9 @@ function ReservationCalendar({data:data2}) {
         <h3 >{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button,index) => (
-            <button key={index} type='button' className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
+            <Button key={index} type='button' className={data.dayPeriod === button.label ? 'active btns' : 'btns'} onClick={() => DayPeriodPrice(button.label)}>
               {i18n.language=='en'? button.enLabel:button.label}
-            </button>
+            </Button>
           ))}
         </div>
         </div>}

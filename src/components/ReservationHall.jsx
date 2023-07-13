@@ -5,7 +5,7 @@ import format from 'date-fns/format'
 import { addDays ,differenceInDays } from 'date-fns'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
-import { Button, Grid, TextField } from '@mui/material';
+import { Grid, TextField } from '@mui/material';
 import { useSelector } from 'react-redux'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 import i18next from 'i18next'
 import MapLocation from './../components/MapLocation';
 import { useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -75,7 +76,6 @@ function ReservationHall({data:data2}) {
     );
   }
   function handleSubmit(e){
-    console.log("fired");
     e.preventDefault()
     setLoading(true)
     if(!login) return setDialogeMsg(true)
@@ -147,7 +147,7 @@ function ReservationHall({data:data2}) {
         <h3>{t("details.period")}</h3>
         <div className="btns-box">
           {buttonGroup.map((button, index) => (
-            <button
+            <Button
               type='button'
               key={index}
               className={data.dayPeriod === button.label ? 'active btns' : 'btns'}
@@ -155,7 +155,7 @@ function ReservationHall({data:data2}) {
             >
               {i18n.language=='ar'&& button.label}
               {i18n.language=='en'&& button.enLabel}
-            </button>
+            </Button>
           ))}
         </div>
         </div>
